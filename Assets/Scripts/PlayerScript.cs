@@ -94,11 +94,11 @@ public class PlayerScript : MonoBehaviour {
 		//get player menu and button data members
 		playerMenu = GameObject.Find("PlayerMenu");
 		
-		attackButton = playerMenu.transform.GetChild(0).gameObject.GetComponent<Button>();
-		attackButton.onClick.AddListener(AttackHandle);
-		
-		moveButton = playerMenu.transform.GetChild(1).gameObject.GetComponent<Button>();
+		moveButton = playerMenu.transform.GetChild(0).gameObject.GetComponent<Button>();
 		moveButton.onClick.AddListener(MoveHandle);
+		
+		attackButton = playerMenu.transform.GetChild(1).gameObject.GetComponent<Button>();
+		attackButton.onClick.AddListener(AttackHandle);
 		
 		inspectButton = playerMenu.transform.GetChild(2).gameObject.GetComponent<Button>();
 		inspectButton.onClick.AddListener(InspectHandle);
@@ -509,6 +509,7 @@ public class PlayerScript : MonoBehaviour {
 							attackButton.Select();
 							menuOpen = true;
 							moveAction = false;
+							menuAction = true;
 							postMove = true;
 							break;
 						}
@@ -557,6 +558,7 @@ public class PlayerScript : MonoBehaviour {
 				} else if (selectedObject!= null && selectedObject.tag == "playerUnit") {
 					//pressing z on a unit with no special state
 					SoundManager.instance.MenuSelect();
+					menuAction = true;
 					prevSelectedButton = attackButton.gameObject;
 					//check if the unit has already acted, allow to inspect only
 					if (selectedObject.GetComponent<UnitScript>().finished) {
@@ -578,7 +580,7 @@ public class PlayerScript : MonoBehaviour {
 						moveButton.interactable = true;
 						waitButton.interactable = true;
 						playerMenu.SetActive(true);
-						attackButton.Select();
+						moveButton.Select();
 					}
 
 					
@@ -866,6 +868,10 @@ public class PlayerScript : MonoBehaviour {
 	
 	void MoveHandle() {
 		//Debug.Log("moving state");
+		if(menuAction){
+			menuAction = false;
+			return;
+		}
 		
 		moveAction = true;
 		playerMenu.SetActive(false);
@@ -876,6 +882,11 @@ public class PlayerScript : MonoBehaviour {
 	}
 	
 	void InspectHandle() {
+		if(menuAction){
+			menuAction = false;
+			return;
+		}
+		
 		inspectSheetOpen = true;
 		
 		UnitScript currentUnitScript = currentUnit.GetComponent<UnitScript>();
