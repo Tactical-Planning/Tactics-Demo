@@ -22,7 +22,9 @@ public class PlayerScript : MonoBehaviour {
 	public bool moveAction;
 	public bool attackTarget;
 	public bool postMove;
-		
+	
+
+	
 	public Button attackButton; 
 	public Button moveButton;
 	public Button inspectButton;
@@ -64,6 +66,7 @@ public class PlayerScript : MonoBehaviour {
 	public bool combatEngaged;
 	
 	public Text itemNameText;
+	
 	public Text itemDescriptionText;
 	
 	public int zIndex = 0;
@@ -80,14 +83,12 @@ public class PlayerScript : MonoBehaviour {
 	public GameObject attackHighlight;
 	public GameObject supportHighlight;
 	
-	
 	public GameObject prevSelectedButton;
 	public int prevItemIndex; 
 	
 	public LevelManagerScript lmInstance;
 	
 	void Start () {
-		
 		
 		lmInstance = this.transform.parent.gameObject.GetComponent<LevelManagerScript>();
 		
@@ -157,6 +158,7 @@ public class PlayerScript : MonoBehaviour {
 		moveAction = false;
 		combatEngaged = false;
 		attackTarget = false;
+		
 		
 		inspectSheetOpen = false;
 		itemMenuOpen = false;
@@ -491,6 +493,7 @@ public class PlayerScript : MonoBehaviour {
 				Selection();
 			} else if ( Input.GetButtonDown("Submit") ){
 				//normal z is pressed
+				Input.ResetInputAxes();
 				GameObject selectedObject = GetSelectedObject();
 				//move code
 				if (currentUnit != null && selectedObject == null && moveAction == true) {
@@ -506,6 +509,7 @@ public class PlayerScript : MonoBehaviour {
 							moveButton.interactable = false;
 							CheckIfItems();
 							playerMenu.SetActive(true);
+							prevSelectedButton = attackButton.gameObject;
 							attackButton.Select();
 							menuOpen = true;
 							moveAction = false;
@@ -558,8 +562,8 @@ public class PlayerScript : MonoBehaviour {
 				} else if (selectedObject!= null && selectedObject.tag == "playerUnit") {
 					//pressing z on a unit with no special state
 					SoundManager.instance.MenuSelect();
-					menuAction = true;
-					prevSelectedButton = attackButton.gameObject;
+					
+					prevSelectedButton = moveButton.gameObject;
 					//check if the unit has already acted, allow to inspect only
 					if (selectedObject.GetComponent<UnitScript>().finished) {
 						FreshSelect();
@@ -592,8 +596,6 @@ public class PlayerScript : MonoBehaviour {
 		} else if ( menuAction == true ) {
 			menuAction = false;
 		}
-		
-		
 		
 	}
 	
@@ -868,10 +870,6 @@ public class PlayerScript : MonoBehaviour {
 	
 	void MoveHandle() {
 		//Debug.Log("moving state");
-		if(menuAction){
-			menuAction = false;
-			return;
-		}
 		
 		moveAction = true;
 		playerMenu.SetActive(false);
@@ -882,10 +880,6 @@ public class PlayerScript : MonoBehaviour {
 	}
 	
 	void InspectHandle() {
-		if(menuAction){
-			menuAction = false;
-			return;
-		}
 		
 		inspectSheetOpen = true;
 		
