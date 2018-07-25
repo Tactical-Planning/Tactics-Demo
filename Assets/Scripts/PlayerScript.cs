@@ -219,6 +219,8 @@ public class PlayerScript : MonoBehaviour {
 		//X is back button
 		if (Input.GetButtonDown("Cancel")) {
 			
+			EventSystem.current.SetSelectedGameObject(null);
+			
 			if((menuOpen||moveAction||attackTarget||postMove||itemTargeting)){
 				SoundManager.instance.MenuCancel();
 			}
@@ -268,6 +270,7 @@ public class PlayerScript : MonoBehaviour {
 				
 				attackTarget = false;
 				playerMenu.SetActive(true);
+				attackButton.Select();
 				menuOpen = true;
 				
 			}
@@ -282,6 +285,7 @@ public class PlayerScript : MonoBehaviour {
 				if (currentUnit.tag=="playerUnit") {
 					CheckIfItems();
 					playerMenu.SetActive(true);
+					inspectButton.Select();
 				} else {
 					menuOpen = false;
 				}
@@ -291,6 +295,7 @@ public class PlayerScript : MonoBehaviour {
 				itemMenuOpen = false;
 				itemMenu.SetActive(false);
 				playerMenu.SetActive(true);
+				itemButton.Select();
 				
 			}
 			//while in primary unit menu
@@ -320,6 +325,7 @@ public class PlayerScript : MonoBehaviour {
 				menuOpen = true;
 				CheckIfItems();
 				playerMenu.SetActive(true);
+				moveButton.Select();
 				
 			}
 			
@@ -495,6 +501,7 @@ public class PlayerScript : MonoBehaviour {
 				//normal z is pressed
 				Input.ResetInputAxes();
 				GameObject selectedObject = GetSelectedObject();
+				EventSystem.current.SetSelectedGameObject(null);
 				//move code
 				if (currentUnit != null && selectedObject == null && moveAction == true) {
 					//check unit's available tiles by iterating see if selected tile is valid for movement
@@ -569,11 +576,11 @@ public class PlayerScript : MonoBehaviour {
 						FreshSelect();
 						attackButton.interactable = false;
 						moveButton.interactable = false;
-						inspectButton.Select();
 						itemButton.interactable = false;
 						waitButton.interactable = false;
 						
 						playerMenu.SetActive(true);
+						inspectButton.Select();
 						menuOpen = true;
 					} else {
 						//normal unit selection, hasn't acted this turn
@@ -584,6 +591,7 @@ public class PlayerScript : MonoBehaviour {
 						moveButton.interactable = true;
 						waitButton.interactable = true;
 						playerMenu.SetActive(true);
+						
 						moveButton.Select();
 					}
 

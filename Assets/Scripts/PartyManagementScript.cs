@@ -480,9 +480,9 @@ public class PartyManagementScript : MonoBehaviour {
 			}
 		}
 		itemListIndex = 0;
-		itemButtonList[itemListIndex].Select();
 		prevSelectedButton = itemButtonList[itemListIndex].gameObject;
 		itemContainer.SetActive(true);
+		itemButtonList[itemListIndex].Select();
 	}
 	
 	//onClick listener for selecting an item to swap.
