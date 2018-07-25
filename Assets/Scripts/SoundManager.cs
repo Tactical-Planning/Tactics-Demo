@@ -115,7 +115,7 @@ public class SoundManager : MonoBehaviour {
 		audioSource.pitch = 1f;
 	}
 	public void PhaseChange(){
-		audioSource.PlayOneShot(phaseChange);
+		//audioSource.PlayOneShot(phaseChange);
 	}
 
 	//General use function for playing of audio files held by other game objects, such as items
