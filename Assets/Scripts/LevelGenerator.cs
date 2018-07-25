@@ -40,7 +40,7 @@ public class LevelGenerator : MonoBehaviour {
 		}
 		
 		GameObject unitInstance;
-		if(GameManager.instance.GetComponent<GameManager>().levelNumber == 0){
+		if(GameManager.instance.GetComponent<GameManager>().levelNumber == 1){
 			unitInstance = Instantiate(unitArcher, new Vector3(3,3,0f),Quaternion.identity) as GameObject;
 			lmInstance.GetComponent<LevelManagerScript>().tileArray[3,3].GetComponent<TileScript>().occupyingObject = unitInstance;
 			unitInstance.GetComponent<UnitScript>().tileCur = lmInstance.GetComponent<LevelManagerScript>().tileArray[3,3];

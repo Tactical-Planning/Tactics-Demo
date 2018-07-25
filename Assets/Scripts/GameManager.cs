@@ -9,8 +9,9 @@ using System.IO;
 public class GameManager : MonoBehaviour
 {
 
-	public static GameManager instance = null;
-	public List<string> levelNames;
+	public static GameManager instance = null;     
+	private LevelGenerator levelGenerator;
+	public LevelClass[] levelAttributes;
 	public int levelNumber;
 	public int levelCount;
 	public List<GameObject> partyUnits;
@@ -79,7 +80,7 @@ public class GameManager : MonoBehaviour
 	//Initializes the game for each level.
 	public void InitGame()
 	{
-		SceneManager.LoadScene(levelNames[levelNumber]);
+		SceneManager.LoadScene(levelNumber);
 		
 	}
 	
@@ -221,7 +222,7 @@ public class GameManager : MonoBehaviour
 	
 	public void ClearData() {
 		
-		levelNumber = 0;
+		levelNumber = 1;
 		playTime = 0f;
 		
 		partyUnits = new List<GameObject>();
