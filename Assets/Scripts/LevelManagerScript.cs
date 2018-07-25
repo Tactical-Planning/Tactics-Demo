@@ -153,6 +153,7 @@ public class LevelManagerScript : MonoBehaviour {
 		phaseCounter++;
 		if(phaseCounter>1){
 			phaseCounter = 0;
+			unitListIndex = 0;
 			NextTurn();
 		}
 		foreach (GameObject unit in unitList) {

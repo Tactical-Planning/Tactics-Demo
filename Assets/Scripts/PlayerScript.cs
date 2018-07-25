@@ -11,6 +11,7 @@ public class PlayerScript : MonoBehaviour {
 	public int[] location;
 	
 	private float timeToWait = 0; // variable to check if player has recently moved
+	private int tilesMoved = 0; // variable to check how many tiles player has moved while holding button
 	private float slowTimeToWait = (float) 0.15; // time player must wait after moving
 	private float fastTimeToWait = (float) 0.05; // time player must wait after moving if spacebar is held
 
@@ -351,6 +352,10 @@ public class PlayerScript : MonoBehaviour {
 			timeToWait -= Time.deltaTime;
 		}
 		
+		if ((int) Input.GetAxisRaw("Horizontal") == 0 && (int) Input.GetAxisRaw("Vertical") == 0) {
+			tilesMoved = 0;
+		}
+		
 		//if the item menu is open listen for button inputs, do relevant action
 		if(itemMenuOpen && !menuAction){
 			//if input is left or right, cycle through item menu
@@ -643,9 +648,10 @@ public class PlayerScript : MonoBehaviour {
 		transform.position = transform.parent.GetComponent<LevelManagerScript>().tileArray[location[0],location[1]].transform.position;
 	
 		transform.parent.GetComponent<LevelManagerScript>().activeTile = transform.parent.GetComponent<LevelManagerScript>().tileArray[location[0],location[1]];
-	
+		
+		tilesMoved++;
 		if (horizontal != 0 || vertical != 0) {
-			if (Input.GetButton("FastMove")) {
+			if (Input.GetButton("FastMove") || tilesMoved > 5) {
 				timeToWait = fastTimeToWait;
 			} else {
 				timeToWait = slowTimeToWait;
@@ -869,6 +875,7 @@ public class PlayerScript : MonoBehaviour {
 
 		// populate attack targets list in level manager
 		lmInstance.PopulateAttackTargetsList(currentUnit.GetComponent<UnitScript>().availableImmediateAttacks);
+		lmInstance.unitListInRange.Remove(currentUnit);
 		
 		attackTarget = true;
 		

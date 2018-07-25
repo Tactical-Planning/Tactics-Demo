@@ -649,6 +649,9 @@ public class UnitScript : MonoBehaviour {
 		
 		Debug.Log("priority against unit "+targetUnit.GetComponent<UnitScript>().charName+" = "+tempPriority.ToString());
 		
+		if (tempPriority<=0) {
+			tempPriority = 1;
+		}
 		return tempPriority;
 		
 	}
