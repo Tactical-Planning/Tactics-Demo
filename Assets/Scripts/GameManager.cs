@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
 
 	public static GameManager instance = null;     
 	private LevelGenerator levelGenerator;
-	public LevelClass[] levelAttributes;
+	public List<string> levelNames;
 	public int levelNumber;
 	public int levelCount;
 	public List<GameObject> partyUnits;
@@ -80,7 +80,7 @@ public class GameManager : MonoBehaviour
 	//Initializes the game for each level.
 	public void InitGame()
 	{
-		SceneManager.LoadScene(levelNumber);
+		SceneManager.LoadScene(levelNames[levelNumber]);
 		
 	}
 	
@@ -222,7 +222,7 @@ public class GameManager : MonoBehaviour
 	
 	public void ClearData() {
 		
-		levelNumber = 1;
+		levelNumber = 0;
 		playTime = 0f;
 		
 		partyUnits = new List<GameObject>();

@@ -449,7 +449,7 @@ public class UnitScript : MonoBehaviour {
 			TakeDamage(attack-defense);
 			FinishAction();
 			levelManagerScript.player.combatEngaged = false;
-			return true; 
+			yield break; 
 		}
 		
 		int numUnitAttacks = CalculateAttackNumber(agility-5>targetUnit.GetComponent<UnitScript>().agility);
