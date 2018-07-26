@@ -119,7 +119,7 @@ public class UnitScript : MonoBehaviour {
 	void Update () {
 		if(moving){
 			
-			float frac = (Time.time - startTime)*3/totalDist;
+			float frac = Time.deltaTime*(Time.time - startTime)*300/totalDist;
 			
 			this.transform.position = Vector3.Lerp(this.transform.position, levelManagerScript.tileArray[pathToFollow[moveIndex][0],pathToFollow[moveIndex][1]].transform.position, frac);
 			
