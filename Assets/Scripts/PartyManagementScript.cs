@@ -263,9 +263,7 @@ public class PartyManagementScript : MonoBehaviour {
 				choosingSlot = true;
 				for(int i = 1; i<equipmentListContainer.transform.GetChild(0).childCount; i++){
 					equipmentListContainer.transform.GetChild(0).GetChild(i).gameObject.SetActive(false);
-					//equipmentListContainer.transform.GetChild(0).GetChild(1).GetComponent<Button>().onClick.RemoveAllListeners();
-					//DestroyImmediate(equipmentListContainer.transform.GetChild(0).GetChild(1).gameObject);	
-				}
+					}
 				
 				rightSheet.SetActive(false);
 				infoContainer.SetActive(false);
@@ -286,7 +284,6 @@ public class PartyManagementScript : MonoBehaviour {
 	
 	// when selecting a unit button, update the left sheet
 	void UnitOnSelect() {
-		//EventSystem.current.currentSelectedGameObject
 		currentUnitScript = gameManager.partyUnits[unitButtonList.IndexOf(EventSystem.current.currentSelectedGameObject.GetComponent<Button>())].GetComponent<UnitScript>();
 		
 		characterNameText.text = currentUnitScript.charName;
@@ -307,7 +304,6 @@ public class PartyManagementScript : MonoBehaviour {
 	
 	// when selecting a target unit button, update the right sheet
 	void TargetUnitOnSelect() {
-		//EventSystem.current.currentSelectedGameObject
 		currentTargetUnitScript = gameManager.partyUnits[unitButtonList.IndexOf(EventSystem.current.currentSelectedGameObject.GetComponent<Button>())].GetComponent<UnitScript>();
 		
 		//reset itemButtons
@@ -368,20 +364,14 @@ public class PartyManagementScript : MonoBehaviour {
 		
 		
 		Vector3 location = new Vector3( equipToolTip.transform.position.x, currentSelectedEquip.transform.position.y, equipToolTip.transform.position.z);
-
 		equipToolTip.transform.position = location;
 		
 		EquipmentScript tempEquip = gameManager.equipDict[currentSelectedEquip.transform.GetChild(0).GetComponent<Text>().text].GetComponent<EquipmentScript>();
-		
 		equipToolTip.transform.GetChild(2).GetComponent<Text>().text = tempEquip.equipDescription;
-
 		equipToolTip.SetActive(true);
 	}
 	
 	void TargetEquipOnSelect(){
-		
-		
-		//float curSiblingIndex = (float) currentSelectedTargetEquip.transform.GetSiblingIndex();
 		
 		RectTransform containerRect = equipmentListContainer.GetComponent<RectTransform>();
 		
@@ -635,7 +625,7 @@ public class PartyManagementScript : MonoBehaviour {
 	void SaveHandle() {
 		SoundManager.instance.MenuSelect();
 		Proceed();
-		//load save scene
+		//load save menu scene
 		SceneManager.LoadScene("SaveMenuScene");
 	}
 	
@@ -737,14 +727,12 @@ public class PartyManagementScript : MonoBehaviour {
 		foreach(string equipName in gameManager.partyEquipList) {
 			if ( ((currentSelectedEquip.transform.GetSiblingIndex()==0)&&(gameManager.equipDict[equipName].GetComponent<EquipmentScript>().slot=="W")) || ((currentSelectedEquip.transform.GetSiblingIndex()!=0)&&(gameManager.equipDict[equipName].GetComponent<EquipmentScript>().slot=="A")) ){
 				if (i >= equipmentListContainer.transform.GetChild(0).childCount){
-					Debug.Log("making a button");
 					GameObject tempButton = Instantiate(equipmentButtonPrefab) as GameObject;
 					tempButton.transform.SetParent(equipmentListContainer.transform.GetChild(0));
 					tempButton.transform.GetChild(0).GetComponent<Text>().text = equipName;
 					tempButton.GetComponent<Button>().onClick.AddListener(TargetEquipHandle);
 					tempButton.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
 				} else {
-					Debug.Log("changing a button");
 					GameObject tempButton = equipmentListContainer.transform.GetChild(0).GetChild(i).gameObject;
 					tempButton.transform.GetChild(0).GetComponent<Text>().text = equipName;
 					tempButton.SetActive(true);
@@ -784,8 +772,6 @@ public class PartyManagementScript : MonoBehaviour {
 		
 		for(int i = 1; i<equipmentListContainer.transform.GetChild(0).childCount; i++){
 			equipmentListContainer.transform.GetChild(0).GetChild(i).gameObject.SetActive(false);
-			//equipmentListContainer.transform.GetChild(0).GetChild(1).GetComponent<Button>().onClick.RemoveAllListeners();
-			//DestroyImmediate(equipmentListContainer.transform.GetChild(0).GetChild(1).gameObject);	
 		}
 		
 		infoContainer.SetActive(false);

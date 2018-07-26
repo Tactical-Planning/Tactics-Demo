@@ -21,7 +21,5 @@ public class Loader : MonoBehaviour
 			
 			//Instantiate SoundManager prefab
 			Instantiate(soundManager);
-			
-		//GameManager.instance.GetComponent<GameManager>().InitGame();
 	}
 }

@@ -85,10 +85,8 @@ public class UnitScript : MonoBehaviour {
 		statGrowthArray = new float[]{maxHealthGrowth, attackGrowth, defenseGrowth, agilityGrowth};
 		experienceUpdating = false;
 		
-		//tileCur = null;
 		tilePrev= null;
 		priority = 0;
-		//typeOfThing="playerUnit";
 		if(GameManager.instance.GetComponent<GameManager>().inCombat){
 			availableTiles = new List<List<int>>();
 			levelManagerScript = GameObject.Find("LevelManager(Clone)").GetComponent<LevelManagerScript>();
@@ -127,7 +125,6 @@ public class UnitScript : MonoBehaviour {
 				moveIndex++;
 				if(moveIndex>=pathToFollow.Count){
 					moving = false;
-					//levelManagerScript.aiController.unitActing = false;
 				}else{
 					startTime = Time.time;
 					totalDist = Vector3.Distance(transform.position,levelManagerScript.tileArray[pathToFollow[moveIndex][0],pathToFollow[moveIndex][1]].transform.position);
@@ -167,7 +164,6 @@ public class UnitScript : MonoBehaviour {
 			
 		}
 		pathToFollow.Add(new List<int>{goal[0],goal[1]});
-		Debug.Log("pathToFollow is "+ pathToFollow.Count.ToString()+" many tiles long");
 		
 		return;
 	}
@@ -335,11 +331,9 @@ public class UnitScript : MonoBehaviour {
 		if (tileDest == tileCur) {
 			return;
 		}
-		//Debug.Log("starting to modify "+ className);
 		tilePrev = tileCur;
 		tileCur.GetComponent<TileScript>().occupyingObject = null;
 		tileDest.GetComponent<TileScript>().occupyingObject = this.gameObject;
-		//Debug.Log("ending modify " + className);
 		tileCur = tileDest;
 		if(moveBack){
 			this.transform.position = tileDest.transform.position;
@@ -370,7 +364,6 @@ public class UnitScript : MonoBehaviour {
 		ItemScript tempItem = itemList[itemIndex].GetComponent<ItemScript>();
 		itemList.RemoveAt(itemIndex);
 		tempItem.UseItemOnArea();
-		//Debug.Log("Used item in Unit Script");
 		itemIndex = 0;
 		FinishAction();
 	}
@@ -533,10 +526,6 @@ public class UnitScript : MonoBehaviour {
 		if (targetUnit != null && targetUnit.tag == "playerUnit") {
 			progressBar.transform.GetChild(0).gameObject.GetComponent<Slider>().value = ((float)targetUnit.GetComponent<UnitScript>().experience)/100f;
 			progressBar.SetActive(true);
-			/* Debug.Log("Damage = " + targetTotalDamage);
-			Debug.Log("TargetLevel = " + targetUnit.GetComponent<UnitScript>().level.ToString());
-			Debug.Log("Unit Level = " + level.ToString());
-			Debug.Log("Level Ratio = " + levelRatio.ToString()); */
 			targetUnit.GetComponent<UnitScript>().ExperienceCaller(targetTotalDamage * targetLevelRatio);
 			yield return new WaitWhile(() => progressBar.activeSelf);
 			
@@ -574,12 +563,10 @@ public class UnitScript : MonoBehaviour {
 		bool unitDeath = false;
 		bool targetDeath = false;
 		
-		Debug.Log("Numtargetattacks = "+numTargetAttacks.ToString());
 		// check if unit is in target's range
 		if (targetUnit.GetComponent<UnitScript>().range < range) {
 			numTargetAttacks = 0;
 		}
-		Debug.Log("Numtargetattacks = "+numTargetAttacks.ToString());
 		
 		int i =0;
 		while (i<numUnitAttacks || i<numTargetAttacks) {
@@ -621,8 +608,6 @@ public class UnitScript : MonoBehaviour {
 		int totalDealtDamage = targetUnit.GetComponent<UnitScript>().health - tempTargetHealth;
 		int totalTakenDamage = health - tempUnitHealth;
 		
-		Debug.Log("taken damage against unit "+targetUnit.GetComponent<UnitScript>().charName+" = "+totalTakenDamage.ToString());
-		Debug.Log("dealt damage against unit "+targetUnit.GetComponent<UnitScript>().charName+" = "+totalDealtDamage.ToString());
 		
 		List<int> damageTiers = new List<int>{20,10,0};
 		List<int> dealtMods = new List<int>{8,7,6};
@@ -647,7 +632,6 @@ public class UnitScript : MonoBehaviour {
 		
 		tempPriority = tempDealtPriority - tempTakenPriority + tempDeathPriority;
 		
-		Debug.Log("priority against unit "+targetUnit.GetComponent<UnitScript>().charName+" = "+tempPriority.ToString());
 		
 		if (tempPriority<=0) {
 			tempPriority = 1;
@@ -662,9 +646,7 @@ public class UnitScript : MonoBehaviour {
 	}
 	
 	public IEnumerator AddExperience(float addedExp) {
-		//Debug.Log("New Experience = " + addedExp.ToString());
 		int oldExp = experience;
-		//Debug.Log("Old Experience = " + oldExp.ToString());
 		experience += (int) addedExp;
 		if ( (int) addedExp == 0 ) {
 			experience += 1;
@@ -805,7 +787,6 @@ public class UnitScript : MonoBehaviour {
 		}
 		
 		if (phaseOver) {
-			Debug.Log("GOT HERE FIRST SUCKA");
 			levelManagerScript.NextPhase();
 		}
 	}
@@ -815,9 +796,7 @@ public class UnitScript : MonoBehaviour {
 		dead = true;
 		levelManagerScript.unitList.Remove(gameObject);
 		yield return new WaitWhile(() => experienceUpdating);
-		//levelManagerScript.levelEndChecking = true;
 		levelManagerScript.CheckLevelEnd();
-		//yield return new WaitWhile(() => levelManagerScript.levelEndChecking);
 		FinishAction();
 		
 		tileCur.GetComponent<TileScript>().occupyingObject = null;
