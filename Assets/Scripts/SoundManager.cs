@@ -56,7 +56,6 @@ public class SoundManager : MonoBehaviour {
 	}
 	
 	public void MoveCursor() {
-		//Debug.Log("playing movement");
 		audioSource.PlayOneShot(moveCursor);
 	}
 	
@@ -114,8 +113,9 @@ public class SoundManager : MonoBehaviour {
 		audioSource.PlayOneShot(laserGun);
 		audioSource.pitch = 1f;
 	}
+	
 	public void PhaseChange(){
-		//audioSource.PlayOneShot(phaseChange);
+		return;
 	}
 
 	//General use function for playing of audio files held by other game objects, such as items

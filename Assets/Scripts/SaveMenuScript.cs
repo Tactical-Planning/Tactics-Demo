@@ -71,7 +71,7 @@ public class SaveMenuScript : MonoBehaviour {
 	}
 	
 	void ProceedHandle() {
-		// load the next scene, whatever it may be
+		// load the party management scene
 		SoundManager.instance.MenuSelect();
 		SceneManager.LoadScene("PartyManagementScene");
 	}

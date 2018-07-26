@@ -190,9 +190,7 @@ public class PlayerScript : MonoBehaviour {
 			}
 		} else {
 			mapbool = false;
-		}
-		//float soundWait = timeToWait;
-		
+		}		
 		
 		
 		// play sound effects for directional inputs
@@ -551,7 +549,6 @@ public class PlayerScript : MonoBehaviour {
 				} else if (attackTarget) {
 					if (selectedObject!=null) {
 						foreach (GameObject unit in lmInstance.unitListInRange) {
-							//Debug.Log("Unit list in range has stuff");
 							if (unit == selectedObject){
 								infoSheet.SetActive(false);
 								combatEngaged = true;
@@ -639,12 +636,7 @@ public class PlayerScript : MonoBehaviour {
 		
 		location[0] = tempHorizontal;
 		location[1] = tempVertical;
-		/*
-		if (location[0]==0 && location[1]==0) {
-			GameObject.Find("GameManager(Clone)").GetComponent<GameManager>().level_number = 1;
-			SceneManager.LoadScene("SceneA");
-		}
-		*/
+
 		transform.position = transform.parent.GetComponent<LevelManagerScript>().tileArray[location[0],location[1]].transform.position;
 	
 		transform.parent.GetComponent<LevelManagerScript>().activeTile = transform.parent.GetComponent<LevelManagerScript>().tileArray[location[0],location[1]];
@@ -678,7 +670,6 @@ public class PlayerScript : MonoBehaviour {
 	
 	//Selection is called when the Z key is pressed, it selects a tile, and whatever is on it
 	void Selection() {
-		//Debug.Log("Running Selection");
 		GameObject selectedObject = GetSelectedObject();
 		if( selectedObject != null) {
 			if ( (selectedObject.GetComponent<UnitScript>().tag == "playerUnit" || selectedObject.GetComponent<UnitScript>().tag == "enemyUnit") && selectedObject.GetComponent<UnitScript>().selectedFlag) {
@@ -783,7 +774,6 @@ public class PlayerScript : MonoBehaviour {
 			
 			targetedTiles.Add(highlightInstance);
 		}
-		//Debug.Log("Number of tiles: " + currentUnit.GetComponent<UnitScript>().CurrentItem().tilesInRadius.Count);
 		targetHighlightsList = targetedTiles;
 	}
 	
@@ -800,8 +790,6 @@ public class PlayerScript : MonoBehaviour {
 	}
 	
 	void CleanUp(int index) {
-		//Debug.Log("Running Clean Up\nSelectedObjectList.Count = " + selectedObjectList.Count + "\nhighlightsList.Count = " + highlightsList.Count + "\nattackHighlightsList.Count = " + attackHighlightsList.Count);
-		
 		
 		currentUnit = null;
 		selectedObjectList[index].GetComponent<UnitScript>().selectedFlag = false;
@@ -846,7 +834,6 @@ public class PlayerScript : MonoBehaviour {
 	}
 	
 	void AttackHandle(){
-		Debug.Log("we're coding real good now");
 		
 		playerMenu.SetActive(false);
 		menuOpen = false;
@@ -884,7 +871,6 @@ public class PlayerScript : MonoBehaviour {
 	}
 	
 	void MoveHandle() {
-		//Debug.Log("moving state");
 		
 		moveAction = true;
 		playerMenu.SetActive(false);
@@ -933,11 +919,9 @@ public class PlayerScript : MonoBehaviour {
 		menuAction = true;
 		
 		SoundManager.instance.MenuSelect();
-		//currentUnit.GetComponent<UnitScript>().UseItem(0);
 	}
 	
 	void WaitHandle() {
-		//Debug.Log("unit ended turn");
 		
 		currentUnit.GetComponent<UnitScript>().Wait();
 
