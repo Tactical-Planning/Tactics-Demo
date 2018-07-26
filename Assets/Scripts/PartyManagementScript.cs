@@ -116,6 +116,14 @@ public class PartyManagementScript : MonoBehaviour {
 		gameManager.Load("/playerInfo.dat");
 	
 		numItemSlots = 5;
+		for(int i=0; i<numItemSlots; i++) {
+			GameObject tempButton = itemContainer.transform.GetChild(i).gameObject;
+			tempButton.GetComponent<Button>().onClick.AddListener(ItemHandle);
+			
+			tempButton = targetItemContainer.transform.GetChild(i).gameObject;
+			tempButton.GetComponent<Button>().onClick.AddListener(TargetItemHandle);
+		}
+		
 	
 		partyUnitIndex = 0;
 		targetUnitIndex = 0;
@@ -317,7 +325,6 @@ public class PartyManagementScript : MonoBehaviour {
 			GameObject tempButton = targetItemContainer.transform.GetChild(i).gameObject;
 			tempButton.transform.GetChild(0).GetComponent<Text>().text = currentTargetUnitScript.itemList[i].GetComponent<ItemScript>().itemName;
 			tempButton.SetActive(true);
-			tempButton.GetComponent<Button>().onClick.AddListener(TargetItemHandle);
 			tempButton.GetComponent<Button>().interactable = false;
 			targetItemButtonList.Add(tempButton.GetComponent<Button>());
 			if (currentTargetUnitScript.itemList[i].GetComponent<ItemScript>().itemName == "Empty Slot"){
@@ -472,7 +479,6 @@ public class PartyManagementScript : MonoBehaviour {
 			GameObject tempButton = itemContainer.transform.GetChild(i).gameObject;
 			tempButton.transform.GetChild(0).GetComponent<Text>().text = currentUnitScript.itemList[i].GetComponent<ItemScript>().itemName;
 			tempButton.SetActive(true);
-			tempButton.GetComponent<Button>().onClick.AddListener(ItemHandle);
 			itemButtonList.Add(tempButton.GetComponent<Button>());
 			itemListIndex++;
 			if (currentUnitScript.itemList[i].GetComponent<ItemScript>().itemName == "Empty Slot"){
@@ -560,8 +566,6 @@ public class PartyManagementScript : MonoBehaviour {
 			itemButtonList.Add(tempButton.GetComponent<Button>());
 			tempButton.GetComponent<Button>().interactable = false;
 			if (currentUnitScript.itemList[i].GetComponent<ItemScript>().itemName == "Empty Slot"){
-				tempButton.GetComponent<Button>().onClick.RemoveAllListeners();
-				tempButton.GetComponent<Button>().onClick.AddListener(ItemHandle);
 				break;
 			}
 		}
@@ -579,8 +583,6 @@ public class PartyManagementScript : MonoBehaviour {
 			tempButton.SetActive(true);
 			targetItemButtonList.Add(tempButton.GetComponent<Button>());
 			if (currentTargetUnitScript.itemList[i].GetComponent<ItemScript>().itemName == "Empty Slot"){
-				tempButton.GetComponent<Button>().onClick.RemoveAllListeners();
-				tempButton.GetComponent<Button>().onClick.AddListener(TargetItemHandle);
 				break;
 			}
 		}
