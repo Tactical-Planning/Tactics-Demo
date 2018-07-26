@@ -479,6 +479,7 @@ public class PartyManagementScript : MonoBehaviour {
 			GameObject tempButton = itemContainer.transform.GetChild(i).gameObject;
 			tempButton.transform.GetChild(0).GetComponent<Text>().text = currentUnitScript.itemList[i].GetComponent<ItemScript>().itemName;
 			tempButton.SetActive(true);
+			tempButton.GetComponent<Button>().interactable = true;
 			itemButtonList.Add(tempButton.GetComponent<Button>());
 			itemListIndex++;
 			if (currentUnitScript.itemList[i].GetComponent<ItemScript>().itemName == "Empty Slot"){
