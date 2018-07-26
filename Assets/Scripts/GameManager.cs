@@ -37,58 +37,30 @@ public class GameManager : MonoBehaviour
 			instance = this;
 			inCombat = false;
 			
-			//levelNumber = 1;
 			partyUnits = new List<GameObject>();
-			/* int levelCount = 2;
-			levelAttributes = new LevelClass[levelCount];
-			for (int i=0; i<levelCount; i++) {
-				levelAttributes[i] = new LevelClass(10+i,10+i);
-			} */
 			
 			//Sets this to not be destroyed when reloading scene
 			DontDestroyOnLoad(gameObject);
-			
-			//Get a component reference to the attached LevelGenerator script
-			//levelGenerator = GetComponent<LevelGenerator>();
-			
-			//Call the InitGame function to initialize the first level 
-			
-		
+	
 			equipDict = new Dictionary<String, GameObject>();
 			foreach(GameObject equip in equipList){
 				equipDict[equip.GetComponent<EquipmentScript>().equipName] = equip;
 			}
-			
-		
-			//InitGame();
 		
 		}
 		
 		//If instance already exists and it's not this:
 		else if (instance != this) {
-			
 			//Then destroy this. This enforces our singleton pattern, meaning there can only ever be one instance of a GameManager.
 			Destroy(gameObject);    
 		}
 
 	}
 	
-	/* void OnLevelWasLoaded() {
-		InitGame();
-	} */
-	
 	//Initializes the game for each level.
 	public void InitGame()
 	{
 		SceneManager.LoadScene(levelNames[levelNumber]);
-		
-	}
-	
-	
-	
-	//Update is called every frame.
-	void Update()
-	{
 		
 	}
 	
@@ -155,7 +127,6 @@ public class GameManager : MonoBehaviour
 		BinaryFormatter bf = new BinaryFormatter();
 		
 		if (!(File.Exists(Application.persistentDataPath + fileName))) {
-			Debug.Log("No file detected!");
 			return false;
 		}
 		
@@ -272,21 +243,14 @@ public class GameManager : MonoBehaviour
 class PlayerData {
 	public string Version;
 	
-	//public List<GameObject> units;
 	public List<Dictionary<string,int>> unitStats;
 	public List<Dictionary<string,string>> unitNames;
 	public List<List<string>> unitItems;
 	public List<List<string>> unitEquipments;
 	public List<string> partyEquipment;
 	public float playTime;
-	// unit stats
-		// unit equipment
-		// unit items
-	// party inventory
-	
+
 	// levels completed
 	public int currentLevel;
-	
-	// miscellaneous triggers
 	
 }

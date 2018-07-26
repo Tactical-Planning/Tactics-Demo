@@ -22,8 +22,6 @@ public class LevelGenerator : MonoBehaviour {
 	private int startX;
 	private int startY;
 	
-	// Use this for initialization
-	//public void SetupScene (int dx, int dy) 
 	void Awake()
 	{
 		GameManager.instance.GetComponent<GameManager>().inCombat = true;

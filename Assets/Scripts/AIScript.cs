@@ -26,9 +26,7 @@ public class AIScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		//Debug.Log("update: unitsActed " + unitsActed + " numUnits "+ numUnits);
 		if ( (!unitActing) && (unitsActed<numUnits) ) {
-			//Debug.Log("this check is passing");
 			unitActing = true;
 			StartCoroutine(AIPlay());
 			unitsActed++;
@@ -56,12 +54,12 @@ public class AIScript : MonoBehaviour {
 	}
 	
 	public IEnumerator AIPlay(){
-		//Debug.Log("Starting AIPlay");
 		if(friendlyTag == "enemyUnit"){
-			//Debug.Log("Considering Enemies");
 			ConsiderationEnemy();
 		}else{
 			//ConsiderationAllied();
+			
+			//allied units are possible extension of project
 		}
 
 		// choose a unit to act
@@ -82,7 +80,6 @@ public class AIScript : MonoBehaviour {
 		}
 		
 		// chosen unit takes action
-		//Debug.Log("We decided on a guy, his action is "+ tempUnit.GetComponent<UnitScript>().actionToTake);
 		
 		activeUnit = tempUnit;
 		yield return new WaitForSeconds(.5f);
@@ -90,21 +87,18 @@ public class AIScript : MonoBehaviour {
 		StartCoroutine(TakeAction(tempUnit));
 		UnitScript tempScript = tempUnit.GetComponent<UnitScript>();
 		yield return new WaitWhile(() => (!tempScript.finished));
-		//yield return new WaitForSeconds(1);
 		unitActing = false;
 		
 	}
 	
 	
 	public void ConsiderationEnemy() {
-		//Debug.Log("Running Consideration");
 		foreach(GameObject unit in lmInstance.unitList){
 			unit.GetComponent<UnitScript>().priority = 0;
 			unit.GetComponent<UnitScript>().actionToTake = null;
 		}
 		foreach(GameObject unit in lmInstance.unitList) {
 			if (unit.tag == "enemyUnit" && !unit.GetComponent<UnitScript>().finished) {
-				//Debug.Log("Considering");
 
 				// if critical health and item
 					// set priority 0
@@ -113,11 +107,9 @@ public class AIScript : MonoBehaviour {
 		
 				unit.GetComponent<UnitScript>().FindAvailableMoves((int) unit.transform.position.x, (int) unit.transform.position.y, 0);
 				unit.GetComponent<UnitScript>().FindAvailableAttacks((int) unit.transform.position.x, (int) unit.transform.position.y, 0);
-				//Debug.Log("Count of attacks " + unit.GetComponent<UnitScript>().availableAttacks.Count);
 				
 				foreach(GameObject targetUnit in lmInstance.unitList) {
 					if (targetUnit.tag != "enemyUnit") {
-						//Debug.Log("see an enemy on space " + targetUnit.transform.position.x + " " + targetUnit.transform.position.y);
 						foreach(List<int> tile in unit.GetComponent<UnitScript>().availableAttacks){
 							if (((int) targetUnit.GetComponent<UnitScript>().tileCur.transform.position.x)==tile[0] && ((int) targetUnit.GetComponent<UnitScript>().tileCur.transform.position.y)==tile[1]) {
 								// calculate some damage, store in some temp
@@ -126,9 +118,7 @@ public class AIScript : MonoBehaviour {
 									// set action to attack
 									// set target to targetUnit
 								int temp = unit.GetComponent<UnitScript>().EstimateDamage(targetUnit);
-								//Debug.Log("temp priority is" + temp);
 								if (temp > unit.GetComponent<UnitScript>().priority) {
-									//Debug.Log("Chose enemy to atatack");
 									unit.GetComponent<UnitScript>().priority = temp;
 									unit.GetComponent<UnitScript>().actionToTake = "attack";
 									unit.GetComponent<UnitScript>().targetToTarget = targetUnit;
@@ -144,6 +134,8 @@ public class AIScript : MonoBehaviour {
 		
 		
 	}
+	
+	//placeholder for possible allied unit extension
 	
 /* 	public void ConsiderationAllied() {
 		foreach(GameObject unit in lmInstance.unitList) {
@@ -171,14 +163,12 @@ public class AIScript : MonoBehaviour {
 				}
 			}
 			
-			//Debug.Log("Nearest enemy is on space " + (int) tempTarget.transform.position.x + "," + (int) tempTarget.transform.position.y);
 			
 			unit.GetComponent<UnitScript>().FindPath(new int[] {(int) tempTarget.GetComponent<UnitScript>().tileCur.transform.position.x, (int) tempTarget.GetComponent<UnitScript>().tileCur.transform.position.y});
 			List<List<int>> tempPath = unit.GetComponent<UnitScript>().pathToFollow;
 			while(tempPath.Count >  unit.GetComponent<UnitScript>().speed+1){
 				tempPath.RemoveAt(tempPath.Count-1);
 			}
-			Debug.Log("tempPath was truncated to "+tempPath.Count.ToString()+" many tiles long");
 			
 			while (lmInstance.tileArray[tempPath[tempPath.Count-1][0],tempPath[tempPath.Count-1][1]].GetComponent<TileScript>().occupyingObject != null) {
 				if (tempPath.Count > 1) {
@@ -186,12 +176,9 @@ public class AIScript : MonoBehaviour {
 				} else {
 					break;
 				}
-			}
-			Debug.Log("tempPath was truncated to "+tempPath.Count.ToString()+" many tiles long = Post occupied-check");
-			
+			}	
 			int tileInPath = 0;
 			foreach(List<int> tile in tempPath){
-				Debug.Log("tile: "+tileInPath.ToString()+ " X:"+tile[0].ToString()+" Y:"+tile[1].ToString());
 				tileInPath++;
 			}
 			
@@ -204,28 +191,23 @@ public class AIScript : MonoBehaviour {
 		else if (action == "attack") {
 				GameObject targetUnit = unit.GetComponent<UnitScript>().targetToTarget;
 				unit.GetComponent<UnitScript>().FindAvailableImmediateAttacks((int) targetUnit.GetComponent<UnitScript>().tileCur.transform.position.x, (int) targetUnit.GetComponent<UnitScript>().tileCur.transform.position.y,0);
-				//Debug.Log("Count of immediate attacks " + unit.GetComponent<UnitScript>().availableImmediateAttacks.Count);
-				//Debug.Log("Count of move tiles " + unit.GetComponent<UnitScript>().availableTiles.Count);
+
 				List<int> possibleDest = null;
 				float possibleDist = 0f;
 				foreach(List<int> rangeTile in unit.GetComponent<UnitScript>().availableImmediateAttacks){
 					foreach(List<int> tile in unit.GetComponent<UnitScript>().availableTiles){
-						//Debug.Log("tile is " + tile[0] + " " + tile[1] + " and rangeTile is " + rangeTile[0] + " " + rangeTile[1]);
 						
 						if((tile[0] == rangeTile[0]) && (tile[1] == rangeTile[1])){
 							GameObject tileActual = lmInstance.tileArray[tile[0],tile[1]];
-							//Debug.Log("Distance " + Vector3.Distance(tileActual.transform.position, targetUnit.GetComponent<UnitScript>().tileCur.transform.position));
 							if(Vector3.Distance(tileActual.transform.position, targetUnit.GetComponent<UnitScript>().tileCur.transform.position)>possibleDist){
 								possibleDest = tile;
 								possibleDist = Vector3.Distance(tileActual.transform.position, targetUnit.GetComponent<UnitScript>().tileCur.transform.position);
-								//Debug.Log("possible dist " + possibleDist);
 							}
 						}
 					}
 				}
 				
 				unit.GetComponent<UnitScript>().FindPath(new int[] {possibleDest[0],possibleDest[1]});
-				//Debug.Log("possible dest is " + possibleDest[0] + "  " + possibleDest[1]);
 				unit.GetComponent<UnitScript>().MoveUnit(lmInstance.tileArray[possibleDest[0],possibleDest[1]]);
 				yield return new WaitWhile(() => unit.GetComponent<UnitScript>().moving);
 				
@@ -238,8 +220,7 @@ public class AIScript : MonoBehaviour {
 				yield return new WaitForSeconds(1);
 				Destroy(targetHighlight);
 		}
-		
-		//Debug.Log("Ending TakeAction");
+
 	}
 
 	

@@ -177,7 +177,6 @@ public class LevelManagerScript : MonoBehaviour {
 		}
 		
 		if(phaseCounter == 1){
-			Debug.Log("phase counter set to 1, new phase called");
 			aiController.NewPhase();
 			//aiController.AIPlay();
 		}
@@ -207,7 +206,6 @@ public class LevelManagerScript : MonoBehaviour {
 			if (winCondition == "Extermination") {
 				foreach (GameObject unit in unitList) {
 					if ( unit.tag == "enemyUnit" && !unit.GetComponent<UnitScript>().dead) {
-						Debug.Log("Unit " +unit.GetComponent<UnitScript>().charName + " is ALIVE and in the list, his dead value is "+ unit.GetComponent<UnitScript>().dead);
 						playerWin = false;
 					}
 				}
@@ -222,7 +220,6 @@ public class LevelManagerScript : MonoBehaviour {
 		if (playerWin) {
 			levelCanEnd = true;
 		}
-		Debug.Log("playerWin value is "+ playerWin+" and levelCanEnd is "+levelCanEnd+" and level is "+turnCounter);
 	}
 	
 	public void LevelEnd() {
@@ -230,7 +227,6 @@ public class LevelManagerScript : MonoBehaviour {
 		SoundManager.instance.EndLevel();
 		
 		GameManager.instance.playTime += Time.time - startTime;
-		Debug.Log("Player win");
 		GameManager.instance.GetComponent<GameManager>().levelNumber += 1;
 
 		if (GameManager.instance.GetComponent<GameManager>().levelNumber > GameManager.instance.GetComponent<GameManager>().levelCount) {
@@ -249,7 +245,6 @@ public class LevelManagerScript : MonoBehaviour {
 					}
 				}
 				if(!found){
-					Debug.Log("FOUND A NEW UNIT, ADDING TO partyUnits");
 					GameManager.instance.GetComponent<GameManager>().partyUnits.Add(unit);
 				}
 			}
@@ -258,13 +253,6 @@ public class LevelManagerScript : MonoBehaviour {
 		GameManager.instance.GetComponent<GameManager>().inCombat = false;
 		GameManager.instance.GetComponent<GameManager>().Save("/playerInfo.dat");
 		SceneManager.LoadScene("SaveMenuScene");
-		
-		//GameManager.instance.GetComponent<GameManager>().InitGame();
-		// level number make it differenet
-		// update party units list
-		// update any miscellaneous triggers
-		
-		//load between level scene
 	}
 	
 	public void LevelLoss() {

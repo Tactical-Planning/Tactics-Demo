@@ -35,7 +35,6 @@ public class ItemScript : MonoBehaviour{
 	
 	private void UseItem(GameObject target) {
 		//use the item, apply item's effect
-		Debug.Log("Item is used in ItemScript");
 		
 		SoundManager.instance.PlaySound(sound);
 		
