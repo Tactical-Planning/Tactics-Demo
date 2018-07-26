@@ -1,6 +1,6 @@
 WindowsStandalone
 PlayerPath?
-F:/Unity Tutorials/Da Tactics/Da Tactics/Builds/Tactics Demo.exe
+C:/Users/BigLord/Desktop/builds/Tactics Demo.exe
 SceneListBegin?
 Assets/Scenes/MainMenuScene.unity
 Assets/Scenes/Scene1.unity
