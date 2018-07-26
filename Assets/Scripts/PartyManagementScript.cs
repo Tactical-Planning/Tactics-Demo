@@ -633,7 +633,7 @@ public class PartyManagementScript : MonoBehaviour {
 		SoundManager.instance.MenuSelect();
 		Proceed();
 		//load save scene
-		SceneManager.LoadScene("SaveMenu");
+		SceneManager.LoadScene("SaveMenuScene");
 	}
 	
 	void Proceed() {

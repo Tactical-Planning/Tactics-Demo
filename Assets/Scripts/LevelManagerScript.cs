@@ -257,7 +257,7 @@ public class LevelManagerScript : MonoBehaviour {
 		}
 		GameManager.instance.GetComponent<GameManager>().inCombat = false;
 		GameManager.instance.GetComponent<GameManager>().Save("/playerInfo.dat");
-		SceneManager.LoadScene("SaveMenu");
+		SceneManager.LoadScene("SaveMenuScene");
 		
 		//GameManager.instance.GetComponent<GameManager>().InitGame();
 		// level number make it differenet
@@ -268,9 +268,8 @@ public class LevelManagerScript : MonoBehaviour {
 	}
 	
 	public void LevelLoss() {
-		Debug.Log("Hey, you lost, scrub! Heh!");
 		SoundManager.instance.QuitGame();
-		SceneManager.LoadScene("MainMenuScene");
+		SceneManager.LoadScene("GameOverScene");
 	}
 	
 	//method for placing units on map at beginning of level
