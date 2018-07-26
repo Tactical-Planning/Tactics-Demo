@@ -588,7 +588,7 @@ public class PartyManagementScript : MonoBehaviour {
 		}
 		targetItemButtonList[targetItemListIndex].Select();
 		prevSelectedButton = targetItemButtonList[targetItemListIndex].gameObject;
-		
+		TargetItemOnSelect();
 	}
 	
 	void DisengageButtons(List<Button> buttonList) {
