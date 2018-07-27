@@ -26,6 +26,8 @@ public class MainMenuScript : MonoBehaviour {
 	void Start () {
 		
 		fileSelect = false;
+		
+		// Set all the button listeners
 		newGameButton.onClick.AddListener(NewGameHandle);
 		loadButton.onClick.AddListener(LoadGameHandle);
 		creditsButton.onClick.AddListener(CreditHandle);
@@ -33,9 +35,12 @@ public class MainMenuScript : MonoBehaviour {
 		fileTwoButton.onClick.AddListener(FileTwoHandle);
 		fileThreeButton.onClick.AddListener(FileThreeHandle);
 		
+		// prepare lists for iterating in the loop directly below
 		List<Button> buttonList = new List<Button>{fileOneButton,fileTwoButton,fileThreeButton};
 		List<string> nameList = new List<string>{"/fileOneSave.dat","/fileTwoSave.dat","/fileThreeSave.dat"};
-		
+				
+		// Get the file information for each saved file
+		// Put the information on the file buttons
 		for(int i=0; i<nameList.Count; i++) {
 			Dictionary<string,string> fileDict = GameManager.instance.GetFileInfo(nameList[i]);
 			if (fileDict["Empty"]=="Empty") {
@@ -56,6 +61,9 @@ public class MainMenuScript : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+		// if Cancel is pressed when selecting file
+		//		Set inactive the file buttons
+		//		Set active the menu container elements
 		if(fileSelect && Input.GetButtonDown("Cancel")){
 			
 			SoundManager.instance.CloseFileSelect();
@@ -67,6 +75,8 @@ public class MainMenuScript : MonoBehaviour {
 			
 		}
 
+		// if the current selected button has changed
+		//		play the NavigateMenu sound effect
 		if (prevFileButton!=EventSystem.current.currentSelectedGameObject) {
 			SoundManager.instance.NavigateMenu();
 			prevFileButton=EventSystem.current.currentSelectedGameObject;
@@ -74,6 +84,7 @@ public class MainMenuScript : MonoBehaviour {
 	
 	}
 	
+	//Clear any data stored in playerInfo.dat
 	//Load first level
 	void NewGameHandle(){
 		SoundManager.instance.NewGame();
@@ -84,6 +95,8 @@ public class MainMenuScript : MonoBehaviour {
 		
 	}
 	
+	//Set active the file buttons
+	//Set inactive the menu container elements
 	void LoadGameHandle(){
 		
 		SoundManager.instance.OpenFileSelect();
@@ -94,6 +107,8 @@ public class MainMenuScript : MonoBehaviour {
 		prevFileButton = fileOneButton.gameObject;
 	}
 	
+	//Copy the data in file one into playerInfo.dat
+	//Load the party management scene
 	void FileOneHandle(){
 		
 		if (GameManager.instance.Load("/fileOneSave.dat") == false) {
@@ -105,6 +120,9 @@ public class MainMenuScript : MonoBehaviour {
 		SceneManager.LoadScene("PartyManagementScene");
 		
 	}
+	
+	//Copy the data in file two into playerInfo.dat
+	//Load the party management scene
 	void FileTwoHandle(){
 		
 		if (GameManager.instance.Load("/fileTwoSave.dat") == false) {
@@ -116,6 +134,9 @@ public class MainMenuScript : MonoBehaviour {
 		SceneManager.LoadScene("PartyManagementScene");
 		
 	}
+	
+	//Copy the data in file three into playerInfo.dat
+	//Load the party management scene
 	void FileThreeHandle(){
 		
 		if (GameManager.instance.Load("/fileThreeSave.dat") == false) {
@@ -128,7 +149,7 @@ public class MainMenuScript : MonoBehaviour {
 		
 	}
 	
-	
+	//Load the credits scene
 	void CreditHandle(){
 		
 		SceneManager.LoadScene("CreditScene");

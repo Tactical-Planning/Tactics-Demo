@@ -24,10 +24,9 @@ public class PlayerScript : MonoBehaviour {
 	public bool attackTarget;
 	public bool postMove;
 	
-
-	
-	public Button attackButton; 
+	//player menu buttons
 	public Button moveButton;
+	public Button attackButton; 
 	public Button inspectButton;
 	public Button itemButton;
 	public Button waitButton;
@@ -37,8 +36,10 @@ public class PlayerScript : MonoBehaviour {
 	public GameObject inspectSheet;
 	public bool inspectSheetOpen;
 	
+	//location of the levelUpSheet
 	public Vector3 levelUpSheetLocation;
 	
+	//inspect sheet / level up sheet text elements
 	public Text characterNameText;
 	public Text levelText;
 	public Text classText;
@@ -70,11 +71,15 @@ public class PlayerScript : MonoBehaviour {
 	
 	public Text itemDescriptionText;
 	
+	// map zooming data
 	public int zIndex = 0;
 	public float[] zoomLevels = {5,3,5,7};
+	
+	// bools to prevent zooming and unit cycling while holding down buttons
 	private bool mapbool;
 	private bool cyclebool;
 	
+	// temporary Lists and GameObjects for use throughout script
 	public GameObject currentUnit;
 	public List<GameObject> selectedObjectList;
 	private List<List<GameObject>> highlightsList;
@@ -87,8 +92,11 @@ public class PlayerScript : MonoBehaviour {
 	public GameObject prevSelectedButton;
 	public int prevItemIndex; 
 	
+	// reference to the Level Manager
 	public LevelManagerScript lmInstance;
 	
+	
+	// initialization
 	void Start () {
 		
 		lmInstance = this.transform.parent.gameObject.GetComponent<LevelManagerScript>();
@@ -146,6 +154,7 @@ public class PlayerScript : MonoBehaviour {
 		infoSheet.SetActive(false);
 		itemMenu.SetActive(false);
 		
+		//set Lists and Objects to null at start
 		selectedObjectList = new List<GameObject>();
 		highlightsList = new List<List<GameObject>>();
 		attackHighlightsList = new List<List<GameObject>>();
@@ -170,18 +179,25 @@ public class PlayerScript : MonoBehaviour {
 		
 		prevSelectedButton = null;
 		
+		//check if cursor starts on unit
 		CheckInfoSheet();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		
+		// do not run update in non-player phases
 		if (lmInstance.phaseCounter != 0){
 			return;
 		}
+		
+		// do not run update if a combat is playing out
 		if(combatEngaged){
 			return;
 		}
 		
+		// if a zoom button is pressed, and mapbool is false
+		//		change the zoom level and set mapbool to true
 		if (Input.GetAxisRaw("MapZoom")>0) {
 			if (!mapbool) {
 				mapbool = true;
@@ -189,6 +205,7 @@ public class PlayerScript : MonoBehaviour {
 				if (zIndex >= zoomLevels.GetLength(0)) { zIndex = 0; }
 			}
 		} else {
+			// set mapbool to false if a zoom button is not pressed
 			mapbool = false;
 		}		
 		
@@ -215,21 +232,27 @@ public class PlayerScript : MonoBehaviour {
 		
 		
 
-		//X is back button
+		// if a Cancel button is pressed
 		if (Input.GetButtonDown("Cancel")) {
 			
 			EventSystem.current.SetSelectedGameObject(null);
 			
+			// if a menu is open, play the MenuCancel sound effect
 			if((menuOpen||moveAction||attackTarget||postMove||itemTargeting)){
 				SoundManager.instance.MenuCancel();
 			}
-			//after choosing an item, while choosing a target
-			//returns to choosing an item menu
+			
+			// pressed cancel after choosing an item, while choosing a target
+			// returns to choosing an item menu
 			if (itemTargeting){
 				
 				//move cursor back to unit
 				UnitFocus(currentUnit);
 				
+				// if the unit had moved previously
+				//		move the unit back to its initial position
+				//		highlight unit's range tiles
+				//		return unit to its post-move position
 				if(currentUnit.GetComponent<UnitScript>().tilePrev != null){
 					location[0] = (int) currentUnit.GetComponent<UnitScript>().tilePrev.transform.position.x;
 					location[1] = (int) currentUnit.GetComponent<UnitScript>().tilePrev.transform.position.y;
@@ -239,6 +262,7 @@ public class PlayerScript : MonoBehaviour {
 					location[1] = (int) currentUnit.GetComponent<UnitScript>().tilePrev.transform.position.y;
 					currentUnit.GetComponent<UnitScript>().MoveUnit(currentUnit.GetComponent<UnitScript>().tilePrev, true);
 				}else{
+					// highlight unit's range tiles
 					Selection();
 				}
 				
@@ -252,9 +276,16 @@ public class PlayerScript : MonoBehaviour {
 				
 			}
 			
+			// pressed cancel when choosing a target to attack
+			// return to playermenu
 			else if (attackTarget) {
+				// move cursor back to unit
 				UnitFocus(currentUnit);
 				
+				// if the unit had moved previously
+				//		move the unit back to its initial position
+				//		highlight unit's range tiles
+				//		return unit to its post-move position
 				if(currentUnit.GetComponent<UnitScript>().tilePrev != null){
 					location[0] = (int) currentUnit.GetComponent<UnitScript>().tilePrev.transform.position.x;
 					location[1] = (int) currentUnit.GetComponent<UnitScript>().tilePrev.transform.position.y;
@@ -264,6 +295,7 @@ public class PlayerScript : MonoBehaviour {
 					location[1] = (int) currentUnit.GetComponent<UnitScript>().tilePrev.transform.position.y;
 					currentUnit.GetComponent<UnitScript>().MoveUnit(currentUnit.GetComponent<UnitScript>().tilePrev, true);
 				}else{
+					// highlight unit's range tiles
 					Selection();
 				}
 				
@@ -274,7 +306,8 @@ public class PlayerScript : MonoBehaviour {
 				
 			}
 			
-			//while inspectSheet is open
+			// pressed cancel while inspectSheet is open
+			// close inspect sheet
 			else if(inspectSheetOpen){
 				inspectSheetOpen = false;
 				inspectSheet.SetActive(false);
@@ -289,7 +322,9 @@ public class PlayerScript : MonoBehaviour {
 					menuOpen = false;
 				}
 			}
-			//while item menu is open
+			
+			// pressed cancel while item menu is open
+			// close item menu
 			else if(itemMenuOpen){
 				itemMenuOpen = false;
 				itemMenu.SetActive(false);
@@ -297,7 +332,9 @@ public class PlayerScript : MonoBehaviour {
 				itemButton.Select();
 				
 			}
-			//while in primary unit menu
+			
+			// pressed cancel while in primary unit menu
+			// close menu, return to tile selection
 			else if(menuOpen && !postMove){
 				
 				playerMenu.SetActive(false);
@@ -313,7 +350,8 @@ public class PlayerScript : MonoBehaviour {
 			}
 			
 			
-			//while selecting move destination
+			// pressed cancel while selecting move destination
+			// return to playermenu
 			else if(moveAction){
 				
 				//move cursor back to unit
@@ -328,8 +366,8 @@ public class PlayerScript : MonoBehaviour {
 				
 			}
 			
-			//while in post-move menu
-			//returns to move selection state
+			// pressed cancel while in post-move menu
+			// returns to move selection state
 			else if(postMove){
 			
 				playerMenu.SetActive(false);
@@ -339,6 +377,7 @@ public class PlayerScript : MonoBehaviour {
 				menuAction = true;
 				menuOpen = false;
 				
+				// return unit to its previous position
 				currentUnit.GetComponent<UnitScript>().MoveBack();
 					
 			}
@@ -350,11 +389,12 @@ public class PlayerScript : MonoBehaviour {
 			timeToWait -= Time.deltaTime;
 		}
 		
+		// if no movement buttons are held, reset tilesMoved to 0
 		if ((int) Input.GetAxisRaw("Horizontal") == 0 && (int) Input.GetAxisRaw("Vertical") == 0) {
 			tilesMoved = 0;
 		}
 		
-		//if the item menu is open listen for button inputs, do relevant action
+		//if the item menu is open, listen for button inputs, do relevant action
 		if(itemMenuOpen && !menuAction){
 			//if input is left or right, cycle through item menu
 			if(((int) Input.GetAxisRaw("Horizontal") != 0) && (timeToWait<=0)){
@@ -371,13 +411,15 @@ public class PlayerScript : MonoBehaviour {
 						currentUnit.GetComponent<UnitScript>().itemIndex = currentUnit.GetComponent<UnitScript>().itemList.Count-1;
 					}	
 				}
+				// set menu text to item's name and description
 				itemNameText.text = currentUnit.GetComponent<UnitScript>().CurrentItem().itemName;
 				itemDescriptionText.text = currentUnit.GetComponent<UnitScript>().CurrentItem().description;
 			
+				// set timeToWait to prevent fast menu cycling
 				timeToWait = slowTimeToWait;
 			}
 			
-			// if input is Z, choose a tile to target
+			// if input is Submit, choose a tile to target
 			if (Input.GetButtonDown("Submit")) {
 				SoundManager.instance.MenuSelect();
 				itemMenuOpen = false;
@@ -387,22 +429,23 @@ public class PlayerScript : MonoBehaviour {
 				menuOpen = false;
 				menuAction = true;
 				
+				// clean up tile highlights
 				GameObject tempUnit;
 				tempUnit = currentUnit;
 				BigCleanUp();
 				currentUnit = tempUnit;
 				
+				// set new highlights for item radius
 				currentUnit.GetComponent<UnitScript>().CurrentItem().validTiles = new List<List<int>>();
 				currentUnit.GetComponent<UnitScript>().CurrentItem().FindValidTiles(location[0],location[1],0);
-				
 				HighlightRadius();
 			}
 			
 		}
 		
 		
-		//check if the menu is open, if it is we don't want cursor actions available
-		//for 1 frame after menu closes, cursor will be locked so that the z-press from menu doesn't select unit
+		// if the menu is open, cursor actions are unavailable
+		// for 1 frame after menu closes, cursor will be locked so that the Submit-press from menu doesn't select unit
 		if(menuOpen == false && menuAction == false){
 			
 			//cycle through units
@@ -411,9 +454,11 @@ public class PlayerScript : MonoBehaviour {
 					
 					if(itemTargeting){
 						lmInstance.unitListIndex++;
+						// if the end of the unitList is hit, loop back to the start of the list
 						if (lmInstance.unitListIndex >= lmInstance.unitList.Count) {
 							lmInstance.unitListIndex = 0;
 						}
+						// focus on unit and set item range highlight around cursor
 						UnitFocus(lmInstance.unitList[lmInstance.unitListIndex]);
 						TileCleanUp();
 						foreach (List<int> tileLocation in currentUnit.GetComponent<UnitScript>().CurrentItem().validTiles) {
@@ -425,13 +470,18 @@ public class PlayerScript : MonoBehaviour {
 						
 					} else if (attackTarget) {
 						lmInstance.unitListInRangeIndex++;
+						// if the end of the unitList is hit, loop back to the start of the list
 						if (lmInstance.unitListInRangeIndex >= lmInstance.unitListInRange.Count) {
 							lmInstance.unitListInRangeIndex = 0;
 						}
+						// focus on unit
 						UnitFocus(lmInstance.unitListInRange[lmInstance.unitListInRangeIndex]);
 					} else{
+						// if not in item targeting or attack targeting
+						//		cycle to next player unit that has not finished
 						do {
 							lmInstance.unitListIndex++;
+							// if the end of the unitList is hit, loop back to the start of the list
 							if (lmInstance.unitListIndex >= lmInstance.unitList.Count) {
 								lmInstance.unitListIndex = 0;
 							}
@@ -446,9 +496,11 @@ public class PlayerScript : MonoBehaviour {
 				if (!cyclebool){
 					if(itemTargeting){
 						lmInstance.unitListIndex--;
+						// if the start of the unitList is hit, loop back to the end
 						if (lmInstance.unitListIndex <0) {
 							lmInstance.unitListIndex = lmInstance.unitList.Count-1;
 						}
+						// focus on unit and set item range highlight around cursor
 						UnitFocus(lmInstance.unitList[lmInstance.unitListIndex]);
 						TileCleanUp();
 						foreach (List<int> tileLocation in currentUnit.GetComponent<UnitScript>().CurrentItem().validTiles) {
@@ -459,13 +511,18 @@ public class PlayerScript : MonoBehaviour {
 						}
 					} else if (attackTarget) {
 						lmInstance.unitListInRangeIndex--;
+						// if the start of the unitList is hit, loop back to the end
 						if (lmInstance.unitListInRangeIndex < 0) {
 							lmInstance.unitListInRangeIndex = lmInstance.unitListInRange.Count-1;
 						}
+						// focus on unit
 						UnitFocus(lmInstance.unitListInRange[lmInstance.unitListInRangeIndex]);
 					} else{
+						// if not in item targeting or attack targeting
+						//		cycle to next player unit that has not finished
 						do {
 							lmInstance.unitListIndex--;
+							// if the start of the unitList is hit, loop back to the end
 							if (lmInstance.unitListIndex < 0) {
 								lmInstance.unitListIndex = lmInstance.unitList.Count-1;
 							}
@@ -476,6 +533,7 @@ public class PlayerScript : MonoBehaviour {
 					CheckInfoSheet();
 				}
 			} else {
+				// if no cycle button is held, set cyclebool to false
 				cyclebool = false;
 			}
 			
@@ -497,17 +555,23 @@ public class PlayerScript : MonoBehaviour {
 					}
 				}
 			}
-			//leftshift+z is pressed to highlight a units ranges, but not select it
+			
+			// MultSelect is pressed to highlight a units range, but not select the unit
 			if ( (Input.GetAxisRaw("MultSelect")>0 && Input.GetButtonDown("Submit")) || (Input.GetButtonDown("Submit") && Input.GetAxisRaw("MultSelect")>0) ) {
 				Selection();
 			} else if ( Input.GetButtonDown("Submit") ){
-				//normal z is pressed
+				// Submit is pressed without MultSelect
+				
+				// reset the input axes to prevent a menu button from being pressed immediately
 				Input.ResetInputAxes();
+				
 				GameObject selectedObject = GetSelectedObject();
 				EventSystem.current.SetSelectedGameObject(null);
-				//move code
+				
+				// if Submit is pressed in the moveAction state
+				//		begin the unit's movement code
 				if (currentUnit != null && selectedObject == null && moveAction == true) {
-					//check unit's available tiles by iterating see if selected tile is valid for movement
+					//check unit's available tiles by iterating to see if selected tile is valid for movement
 					foreach (List<int> tileLocation in currentUnit.GetComponent<UnitScript>().availableTiles) {
 						if (location[0]==tileLocation[0] && location[1]==tileLocation[1]) {
 							currentUnit.GetComponent<UnitScript>().FindPath(new int[] {location[0],location[1]} );
@@ -515,7 +579,7 @@ public class PlayerScript : MonoBehaviour {
 							//call movement method from unit
 							currentUnit.GetComponent<UnitScript>().MoveUnit(lmInstance.tileArray[location[0],location[1]]);
 							
-							//open secondary post move menu
+							//open post-move menu
 							moveButton.interactable = false;
 							CheckIfItems();
 							playerMenu.SetActive(true);
@@ -529,10 +593,12 @@ public class PlayerScript : MonoBehaviour {
 						}
 					}
 				} else if(moveAction){
-					//case that move selection is taking place, dont want to select new unit to consider
+					//case that move selection is taking place, and player selected a non-empty tile
 					//doing nothing
 					
 				} else if (itemTargeting){
+					// Submit is pressed while choosing a target for an item
+					// iterate through item's tiles in range to make sure a valid tile is chosen
 					foreach (List<int> tileLocation in currentUnit.GetComponent<UnitScript>().CurrentItem().validTiles) {
 						if (location[0]==tileLocation[0] && location[1]==tileLocation[1]) {
 							//call UseItem method from unit
@@ -547,7 +613,10 @@ public class PlayerScript : MonoBehaviour {
 						}
 					}
 				} else if (attackTarget) {
+					// Submit is pressed while choosing a target to attack
+					// check that the chosen tile has a unit
 					if (selectedObject!=null) {
+						// check that the chosen unit is in range
 						foreach (GameObject unit in lmInstance.unitListInRange) {
 							if (unit == selectedObject){
 								infoSheet.SetActive(false);
@@ -565,11 +634,13 @@ public class PlayerScript : MonoBehaviour {
 					}
 
 				} else if (selectedObject!= null && selectedObject.tag == "enemyUnit") {
+					// Submit is pressed in the default state while selecting an enemy
+					// Inspect the enemy
 					InspectEnemy();
 					SoundManager.instance.MenuSelect();
 					
 				} else if (selectedObject!= null && selectedObject.tag == "playerUnit") {
-					//pressing z on a unit with no special state
+					// Submit is pressed in the default state while selecting a player unit
 					SoundManager.instance.MenuSelect();
 					
 					prevSelectedButton = moveButton.gameObject;
@@ -599,17 +670,20 @@ public class PlayerScript : MonoBehaviour {
 
 					
 				} else {
-					//in the case unit(s) have been selected with shift+z, and a blank selected, highlights will disappear
+					//in the case unit(s) have been selected with MultSelect, and a blank tile is selected, highlights will disappear
 					BigCleanUp();
 				}
 			}
 		} else if ( menuAction == true ) {
+			// after one frame has passed, set menuAction to false
 			menuAction = false;
 		}
 		
 	}
 	
-	// Movement is called once per frame that timeToWait is not greater than zero
+	// Movement is called in update, when cursor movement occurs and timeToWait is 0
+	// changes the location of the cursor based on the direction(s) held
+	// updates timeToWait
 	void Movement () {
 		
 		int horizontal = 0;
@@ -618,10 +692,11 @@ public class PlayerScript : MonoBehaviour {
 		horizontal = (int) Input.GetAxisRaw("Horizontal");
 		vertical = (int) Input.GetAxisRaw("Vertical");
 		
+		// determine the position the cursor would go to
 		int tempHorizontal = location[0] + horizontal;
 		int tempVertical = location[1] + vertical;
 		
-		
+		// determine if cursor would move off of the map
 		if (tempHorizontal < 0 || tempHorizontal >= transform.parent.GetComponent<LevelManagerScript>().tileArrayLength[0]) {
 			tempHorizontal = location[0];
 		}
@@ -634,32 +709,43 @@ public class PlayerScript : MonoBehaviour {
 			SoundManager.instance.MoveCursor();
 		}
 		
+		// set cursor on new position
 		location[0] = tempHorizontal;
 		location[1] = tempVertical;
 
 		transform.position = transform.parent.GetComponent<LevelManagerScript>().tileArray[location[0],location[1]].transform.position;
-	
+
+		// set the active tile to the cursor's new tile
 		transform.parent.GetComponent<LevelManagerScript>().activeTile = transform.parent.GetComponent<LevelManagerScript>().tileArray[location[0],location[1]];
 		
+		// increase tilesMoved
 		tilesMoved++;
 		if (horizontal != 0 || vertical != 0) {
+			// if FastMove is held, or tilesMoved has reached a threshold
+			//		set timeToWait to fastTimeToWait
 			if (Input.GetButton("FastMove") || tilesMoved > 5) {
 				timeToWait = fastTimeToWait;
 			} else {
+				// set timeToWait to slowTimeToWait
 				timeToWait = slowTimeToWait;
 			}
 		}
 	}
 	
 	
-	
+	// GetSelectedObject is called when the object on a tile is needed
+	// returns the occupyingObject on the current tile
 	GameObject GetSelectedObject() {
 		GameObject selectedObject = transform.parent.GetComponent<LevelManagerScript>().tileArray[location[0],location[1]].GetComponent<TileScript>().occupyingObject;
 		return selectedObject;
 	}
 	
+	// FreshSelect is called when selecting a unit without MultSelect
+	// cleans up the tile highlights currently on the level
+	// creates new highlights around the unit
 	void FreshSelect() {
 		GameObject selectedObject = GetSelectedObject();
+		// if the selected object is already selected, then deselect it
 		if (selectedObject == null || selectedObject.GetComponent<UnitScript>().selectedFlag) {
 			BigCleanUp();
 		} else  {
@@ -668,13 +754,17 @@ public class PlayerScript : MonoBehaviour {
 		}
 	}
 	
-	//Selection is called when the Z key is pressed, it selects a tile, and whatever is on it
+	// Selection is called when Submit is pressed
+	// selects a tile, and whatever is on it
 	void Selection() {
 		GameObject selectedObject = GetSelectedObject();
 		if( selectedObject != null) {
+			// if the selected unit is already selected, clean up the tile highlights
 			if ( (selectedObject.GetComponent<UnitScript>().tag == "playerUnit" || selectedObject.GetComponent<UnitScript>().tag == "enemyUnit") && selectedObject.GetComponent<UnitScript>().selectedFlag) {
 				CleanUp(selectedObjectList.IndexOf(selectedObject));	
-			} else if( (selectedObject.GetComponent<UnitScript>().tag == "playerUnit" || selectedObject.GetComponent<UnitScript>().tag == "enemyUnit") && !selectedObject.GetComponent<UnitScript>().selectedFlag) {
+			} 
+			// if the selected unit is not already selected, add the unit to the selected objects list
+			else if( (selectedObject.GetComponent<UnitScript>().tag == "playerUnit" || selectedObject.GetComponent<UnitScript>().tag == "enemyUnit") && !selectedObject.GetComponent<UnitScript>().selectedFlag) {
 				currentUnit = selectedObject;
 				selectedObject.GetComponent<UnitScript>().selectedFlag = true;
 				selectedObject.GetComponent<UnitScript>().FindAvailableMoves(location[0],location[1],0);
@@ -683,12 +773,16 @@ public class PlayerScript : MonoBehaviour {
 				selectedObjectList.Add(selectedObject);
 			} 
 			
+			// destroy the tile highlights
 			TileCleanUp();
 			
+			// iterate through all the units in selectedObjectList
+			// create move highlights in their movement ranges
 			foreach (GameObject unit in selectedObjectList) {
 				List<GameObject> moves = new List<GameObject>();
 				foreach (List<int> subList in unit.GetComponent<UnitScript>().availableHLTiles) {
 					GameObject highlightInstance = Instantiate(tileHighlight, transform.parent.GetComponent<LevelManagerScript>().tileArray[subList[0],subList[1]].transform.position, Quaternion.identity) as GameObject;
+					// set the alpha of the highlight based on distance from the unit
 					Color tmp = highlightInstance.GetComponent<SpriteRenderer>().color;
 					float dist = (float) subList[2];
 					tmp.a = (float) 0.8 - (dist/4);
@@ -697,41 +791,40 @@ public class PlayerScript : MonoBehaviour {
 					
 					moves.Add(highlightInstance);
 				}
+				// add the highlights to the highlightsList
 				highlightsList.Add(moves);
 			}
 			
+			// iterate through all the units in selectedObjectList
+			// create attack highlights in their attack ranges
 			foreach (GameObject unit in selectedObjectList) {
 				List<GameObject> attacks = new List<GameObject>();
 				foreach (List<int> subList in unit.GetComponent<UnitScript>().availableAttacks) {
 					bool hlexists = false;
+					
+					// if a move highlight is already in this location, do not make a highlight here
 					foreach(List<GameObject> sl in highlightsList){
-						
 						foreach(GameObject hl in sl){
-							
 							if((hl.transform.position.x == subList[0]) && (hl.transform.position.y == subList[1])){
-								
 								hlexists = true;
 								break;
 							}
 						}
 						if (hlexists){break;}
-						
 					}
 					
+					// if an attack highlight is already in this location, do not make a highlight here
 					foreach(List<GameObject> sl in attackHighlightsList){
-						
 						foreach(GameObject hl in sl){
-							
 							if((hl.transform.position.x == subList[0]) && (hl.transform.position.y == subList[1])){
-								
 								hlexists = true;
 								break;
 							}
 						}
 						if (hlexists){break;}
-						
 					}
 					
+					// if no highlight already exists here, make an attack highlight here
 					if(!hlexists){
 						GameObject highlightInstance = Instantiate(attackHighlight, transform.parent.GetComponent<LevelManagerScript>().tileArray[subList[0],subList[1]].transform.position, Quaternion.identity) as GameObject;
 						Color tmp = highlightInstance.GetComponent<SpriteRenderer>().color;
@@ -741,15 +834,15 @@ public class PlayerScript : MonoBehaviour {
 						
 						attacks.Add(highlightInstance);
 					}
-				}
-				
-				
+				}	
+				// add the highlights to the attackHighlightsList
 				attackHighlightsList.Add(attacks);
 			}
 		}
 	}
 	
-	//make a highlight around the cursor with radius equal to item radius
+	// HighlightRadius is called when choosing a target location for an item
+	// makes a highlight around the cursor with radius equal to item radius
 	void HighlightRadius() {
 		TileCleanUp();
 		
@@ -765,6 +858,7 @@ public class PlayerScript : MonoBehaviour {
 		}
 		
 		List<GameObject> targetedTiles = new List<GameObject>();
+		// create highlights on every tile in radius
 		foreach (List<int> subList in currentUnit.GetComponent<UnitScript>().CurrentItem().tilesInRadius) {
 			
 			GameObject highlightInstance = Instantiate(tempHighlight, transform.parent.GetComponent<LevelManagerScript>().tileArray[subList[0],subList[1]].transform.position, Quaternion.identity) as GameObject;
@@ -777,7 +871,8 @@ public class PlayerScript : MonoBehaviour {
 		targetHighlightsList = targetedTiles;
 	}
 	
-	
+	// BigCleanUp runs clean up on every selected object
+	// removes all tile highlights
 	void BigCleanUp() {
 		while (selectedObjectList.Count != 0) {
 			CleanUp(0);
@@ -789,6 +884,8 @@ public class PlayerScript : MonoBehaviour {
 		targetHighlightsList = new List<GameObject>();
 	}
 	
+	// CleanUp destroys the highlights associated with the relevant selected object
+	// (int) index is the index associated with the selected object in selectedObjectList, highlightsList, and attackHighlightsList
 	void CleanUp(int index) {
 		
 		currentUnit = null;
@@ -810,6 +907,7 @@ public class PlayerScript : MonoBehaviour {
 
 	}
 	
+	// TileCleanUp destroys every tile highlight and clears all the highlight lists
 	void TileCleanUp() {
 		
 		
@@ -823,7 +921,6 @@ public class PlayerScript : MonoBehaviour {
 				Destroy(hl);
 			}
 		}
-
 		foreach(GameObject hl in targetHighlightsList) {
 			Destroy(hl);
 		}
@@ -833,12 +930,17 @@ public class PlayerScript : MonoBehaviour {
 		targetHighlightsList = new List<GameObject>();
 	}
 	
+	
+	// AttackHandle is the handler on the attack button in the player menu
+	// changes the state to attackTarget
+	// clears all the tile highlights and sets new highlights in the current unit's attack range
 	void AttackHandle(){
 		
 		playerMenu.SetActive(false);
 		menuOpen = false;
 		menuAction = true;
 		
+		// determine which tiles unit can currently attack
 		currentUnit.GetComponent<UnitScript>().FindAvailableImmediateAttacks(location[0],location[1],0);
 		
 		if (currentUnit!=null) {
@@ -870,6 +972,8 @@ public class PlayerScript : MonoBehaviour {
 		
 	}
 	
+	// MoveHandle is the handler on the move button in the player menu
+	// changes the state to moveAction
 	void MoveHandle() {
 		
 		moveAction = true;
@@ -880,6 +984,8 @@ public class PlayerScript : MonoBehaviour {
 		SoundManager.instance.MenuSelect();
 	}
 	
+	// InspectHandle is the handler on the inspect button in the player menu
+	// opens the inspect sheet and populates with unit info
 	void InspectHandle() {
 		
 		inspectSheetOpen = true;
@@ -905,15 +1011,17 @@ public class PlayerScript : MonoBehaviour {
 		SoundManager.instance.MenuSelect();
 	}
 	
+	// ItemHandle is the handler on the item button in the player menu
+	// opens the item selection menu
 	void ItemHandle() {
 		// launch item window
-		// close playermenu
 		itemMenuOpen = true;
 		prevItemIndex = currentUnit.GetComponent<UnitScript>().itemIndex;
 		
 		itemNameText.text = currentUnit.GetComponent<UnitScript>().CurrentItem().itemName;
 		itemDescriptionText.text = currentUnit.GetComponent<UnitScript>().CurrentItem().description;
 		itemMenu.SetActive(true);
+		// close player menu
 		playerMenu.SetActive(false);
 		
 		menuAction = true;
@@ -921,10 +1029,12 @@ public class PlayerScript : MonoBehaviour {
 		SoundManager.instance.MenuSelect();
 	}
 	
+	// WaitHandle is the handler on the wait button in the player menu
+	// ends the current unit's action
+	// changes state to default
 	void WaitHandle() {
 		
 		currentUnit.GetComponent<UnitScript>().Wait();
-
 		
 		attackButton.interactable = true;
 		moveButton.interactable = true;
@@ -940,6 +1050,8 @@ public class PlayerScript : MonoBehaviour {
 		SoundManager.instance.MenuSelect();
 	}
 	
+	// EndTurnHandle is the handler on the end turn button in the player menu
+	// runs FinishAction on every remaining player unit
 	void EndTurnHandle() {
 		attackButton.interactable = true;
 		moveButton.interactable = true;
@@ -960,17 +1072,26 @@ public class PlayerScript : MonoBehaviour {
 		SoundManager.instance.MenuSelect();
 	}
 	
+	// InspectEnemy runs when you press Submit on an enemy unit in the default state
+	// sets the enemy to the currentUnit
+	// runs InspectHandle to open the inspect sheet with the enemy's stats
 	void InspectEnemy() {
 		currentUnit = GetSelectedObject();
 		InspectHandle();
 		menuOpen = true;
 	}
 	
+	// CheckIfItems runs when the player menu opens
+	// checks if the unit can use items this turn
+	// sets the itemButton to non-interactable if the unit can not use items
+	// sets the itemButton to interactable otherwise
 	void CheckIfItems() {
 		if (currentUnit.GetComponent<UnitScript>().itemList.Count == 0 || currentUnit.GetComponent<UnitScript>().finished) { itemButton.interactable = false; }
 		else { itemButton.interactable = true; }
 	}
 	
+	// UnitFocus sets the cursor position to a given unit
+	// (GameObject) unit is the unit to move the cursor to
 	public void UnitFocus(GameObject unit) {
 		transform.position = unit.transform.position;
 		location[0] = (int) unit.GetComponent<UnitScript>().tileCur.transform.position.x;
@@ -978,6 +1099,9 @@ public class PlayerScript : MonoBehaviour {
 		transform.parent.GetComponent<LevelManagerScript>().activeTile = transform.parent.GetComponent<LevelManagerScript>().tileArray[location[0],location[1]];
 	}
 	
+	// CheckInfoSheet runs when the cursor moves onto a tile
+	// checks if a unit is on the tile
+	// if so, opens the info sheet with relevant information
 	public void CheckInfoSheet() {
 		GameObject selectedObject = GetSelectedObject();
 		if(selectedObject !=null){

@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 
 public class SaveMenuScript : MonoBehaviour {
 
+	// references to buttons in the scene
 	public Button proceedButton;
 	public Button saveButton;
 	public Button fileOneButton;
@@ -24,6 +25,7 @@ public class SaveMenuScript : MonoBehaviour {
 	void Start () {
 		GameManager.instance.GetComponent<GameManager>().Load("/playerInfo.dat");
 		
+		// Set all the button listeners
 		proceedButton.onClick.AddListener(ProceedHandle);
 		saveButton.onClick.AddListener(SaveHandle);
 		fileOneButton.onClick.AddListener(FileOneHandle);
@@ -32,9 +34,12 @@ public class SaveMenuScript : MonoBehaviour {
 		saveButton.Select();
 		fileSelectOpen = false;
 		
+		// prepare lists for iterating in the loop directly below
 		List<Button> buttonList = new List<Button>{fileOneButton,fileTwoButton,fileThreeButton};
 		List<string> nameList = new List<string>{"/fileOneSave.dat","/fileTwoSave.dat","/fileThreeSave.dat"};
 		
+		// Get the file information for each saved file
+		// Put the information on the file buttons
 		for(int i=0; i<nameList.Count; i++) {
 			Dictionary<string,string> fileDict = GameManager.instance.GetFileInfo(nameList[i]);
 			if (fileDict["Empty"]=="Empty") {
@@ -51,6 +56,10 @@ public class SaveMenuScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		
+		// if Cancel is pressed when selecting file
+		//		Set inactive the file buttons
+		//		Set active the initial menu buttons
 		if (Input.GetButtonDown("Cancel") && fileSelectOpen) {
 			proceedButton.gameObject.SetActive(true);
 			saveButton.gameObject.SetActive(true);
@@ -64,18 +73,22 @@ public class SaveMenuScript : MonoBehaviour {
 			SoundManager.instance.CloseFileSelect();
 		}
 		
+		// if the current selected button has changed
+		//		play the NavigateMenu sound effect
 		if (prevButtonSelected!=EventSystem.current.currentSelectedGameObject){
 			SoundManager.instance.NavigateMenu();
 			prevButtonSelected=EventSystem.current.currentSelectedGameObject;
 		}
 	}
 	
+	// ProceedHandle loads the party management scene
 	void ProceedHandle() {
-		// load the party management scene
 		SoundManager.instance.MenuSelect();
 		SceneManager.LoadScene("PartyManagementScene");
 	}
 	
+	// SaveHandle sets the file buttons active
+	// sets the initial menu buttons inactive
 	void SaveHandle() {
 		SoundManager.instance.OpenFileSelect();
 		
@@ -90,6 +103,9 @@ public class SaveMenuScript : MonoBehaviour {
 		prevButtonSelected = fileOneButton.gameObject;
 	}
 	
+	// FileOneHandle saves the data to fileOneSave.dat
+	// sets the file buttons inactive
+	// runs SaveConfirmation()
 	void FileOneHandle(){
 		
 		SoundManager.instance.SaveGame();
@@ -98,10 +114,12 @@ public class SaveMenuScript : MonoBehaviour {
 		fileTwoButton.gameObject.SetActive(false);
 		fileThreeButton.gameObject.SetActive(false);
 		StartCoroutine(SaveConfirmation());
-		
-		
+			
 	}
 	
+	// FileTwoHandle saves the data to fileTwoSave.dat
+	// sets the file buttons inactive
+	// runs SaveConfirmation()
 	void FileTwoHandle(){
 		
 		SoundManager.instance.SaveGame();
@@ -111,9 +129,11 @@ public class SaveMenuScript : MonoBehaviour {
 		fileThreeButton.gameObject.SetActive(false);
 		StartCoroutine(SaveConfirmation());
 		
-		
 	}
 	
+	// FileThreeHandle saves the data to fileThreeSave.dat
+	// sets the file buttons inactive
+	// runs SaveConfirmation()
 	void FileThreeHandle(){
 		
 		SoundManager.instance.SaveGame();
@@ -123,9 +143,11 @@ public class SaveMenuScript : MonoBehaviour {
 		fileThreeButton.gameObject.SetActive(false);
 		StartCoroutine(SaveConfirmation());
 		
-		
 	}
 	
+	// SaveConfirmation runs after a file buttons has been selected
+	// sets the saveConfirm active
+	// loads the PartyManagementScene
 	private IEnumerator SaveConfirmation(){
 		fileSelectOpen = false;
 		saveConfirm.SetActive(true);

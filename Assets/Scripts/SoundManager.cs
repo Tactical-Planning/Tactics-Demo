@@ -47,66 +47,82 @@ public class SoundManager : MonoBehaviour {
 	
 	}
 	
+	// plays in combat when an option in a menu is selected
 	public void MenuSelect() {
 		audioSource.PlayOneShot(menuSelect, .3f);
 	}
 	
+	// plays in combat when cancel is pressed
 	public void MenuCancel() {
 		audioSource.PlayOneShot(menuCancel, .5f);
 	}
 	
+	// plays in combat when the cursor is moved
 	public void MoveCursor() {
 		audioSource.PlayOneShot(moveCursor);
 	}
 	
+	// plays in combat while the experience bar is filling
 	public void ExpGain() {
 		audioSource.PlayOneShot(expGain);
 	}
 	
+	// plays in the main menu when a new game is started
 	public void NewGame(){
 		audioSource.PlayOneShot(newGame);
 	}
 	
+	// plays in the main menu when a game is loaded
 	public void LoadGame() {
 		audioSource.PlayOneShot(loadGame);
 	}
 	
+	// plays in the main menu or in save menu when the file select is opened
 	public void OpenFileSelect() {
 		audioSource.PlayOneShot(openFileSelect);
 	}
 	
+	// plays in the main menu or in save menu when the file select is closed
 	public void CloseFileSelect() {
 		audioSource.PlayOneShot(closeFileSelect);
 	}
 	
+	// plays in the main menu or in save menu when navigating between buttons
 	public void NavigateMenu() {
 		audioSource.PlayOneShot(navigateMenu,0.3f);
 	}
 	
+	// plays in save menu when the game is saved
 	public void SaveGame() {
 		audioSource.PlayOneShot(saveGame);
 	}
 	
+	// plays in party management when the game is quit
 	public void QuitGame() {
 		audioSource.PlayOneShot(quitGame);
 	}
 	
+	// plays in party management when items or equipment are swapped
 	public void Swap(){
 		audioSource.PlayOneShot(swap, .5f);
 	}
 	
+	// plays in combat when a unit levels up
 	public void LevelUp(){
 		audioSource.PlayOneShot(levelUp);
 	}
 	
+	// plays in combat during level up when a stat increases
 	public void StatUp(){
 		audioSource.PlayOneShot(statUp);
 	}
 	
+	// plays in combat when a level ends
 	public void EndLevel(){
 		audioSource.PlayOneShot(endLevel);
 	}
 	
+	// plays in combat when an attack happens
 	public void LaserGun(){
 		float pitch = Random.Range(0.9f,1.1f);
 		audioSource.pitch = pitch;
@@ -114,6 +130,8 @@ public class SoundManager : MonoBehaviour {
 		audioSource.pitch = 1f;
 	}
 	
+	// plays in combat when the phase changes
+	// currently no sound has been chosen
 	public void PhaseChange(){
 		return;
 	}
