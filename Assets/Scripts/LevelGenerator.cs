@@ -24,21 +24,28 @@ public class LevelGenerator : MonoBehaviour {
 	
 	void Awake()
 	{
+		//game state is set to inCombat, as this is Awake function is called at the beginning of a combat level
 		GameManager.instance.GetComponent<GameManager>().inCombat = true;
 		
+		//find the LevelManager, then initialize its arrays/lists for holding the tiles and units present in the scene
 		GameObject lmInstance = GameObject.Find("LevelManager(Clone)");
 		mapX = lmInstance.GetComponent<LevelManagerScript>().tileArrayLength[0];
 		mapY = lmInstance.GetComponent<LevelManagerScript>().tileArrayLength[1];
 		lmInstance.GetComponent<LevelManagerScript>().tileArray = new GameObject[mapX,mapY];
 		lmInstance.GetComponent<LevelManagerScript>().unitList = new List<GameObject>();
 		int numTiles = mapX*mapY;
+		//populate the array of tiles by iterating through the grid present in the scene.
 		for (int i=0; i<numTiles; i++){
 			GameObject tempTile = lmInstance.transform.GetChild(0).GetChild(0).GetChild(i).gameObject;
 			lmInstance.GetComponent<LevelManagerScript>().tileArray[(int) tempTile.transform.position.x, (int) tempTile.transform.position.y] = tempTile;
 		}
 		
+		
 		GameObject unitInstance;
+		//New units to be introduced to the party can be introduced on a case by case basis in each level
+		//for now, the demo introduces 3 player units in the first level
 		if(GameManager.instance.GetComponent<GameManager>().levelNumber == 0){
+			//prefabs are instantiated, equipped, and placed on the map
 			unitInstance = Instantiate(unitArcher, new Vector3(3,3,0f),Quaternion.identity) as GameObject;
 			lmInstance.GetComponent<LevelManagerScript>().tileArray[3,3].GetComponent<TileScript>().occupyingObject = unitInstance;
 			unitInstance.GetComponent<UnitScript>().tileCur = lmInstance.GetComponent<LevelManagerScript>().tileArray[3,3];
@@ -57,6 +64,7 @@ public class LevelGenerator : MonoBehaviour {
 			unitInstance.GetComponent<UnitScript>().Equip(GameManager.instance.equipDict["Ruby Sword"].GetComponent<EquipmentScript>(),0);
 			lmInstance.GetComponent<LevelManagerScript>().unitList.Add(unitInstance);
 		}else{
+			//otherwise, the party is loaded, and placed into start location tiles
 			GameManager.instance.GetComponent<GameManager>().Load("/playerInfo.dat");
 			List<GameObject> party = GameManager.instance.GetComponent<GameManager>().partyUnits;
 			List<GameObject> tiles = lmInstance.GetComponent<LevelManagerScript>().spawnLocations;
@@ -76,7 +84,7 @@ public class LevelGenerator : MonoBehaviour {
 			
 			
 		}
-		
+		//place enemy units in level and add to unitList
 		for (int j = 0; j < lmInstance.transform.GetChild(0).GetChild(1).childCount; j++ ) {
 			unitInstance = lmInstance.transform.GetChild(0).GetChild(1).GetChild(j).gameObject;
 			UnitScript tempUnit = unitInstance.GetComponent<UnitScript>();

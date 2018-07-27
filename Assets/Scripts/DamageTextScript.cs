@@ -26,7 +26,7 @@ public class DamageTextScript : MonoBehaviour {
 	}
 	
 	void Update(){
-		
+		//float the text up from the unit that took damage.
 		float fracDistance = (Time.time - startTime)*.5f/lifeSpan;
 		float fracAlpha = (Time.time - startTime)*.05f/lifeSpan;
 		

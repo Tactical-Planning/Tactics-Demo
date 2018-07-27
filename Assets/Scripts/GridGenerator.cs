@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//This script is used to initially generate the tile grids to be used for level creation in the editor.
+
 public class GridGenerator : MonoBehaviour {
 
 	public GameObject tile;
@@ -24,15 +26,20 @@ public class GridGenerator : MonoBehaviour {
 		grid = new GameObject("Grid").transform;
 		grid.SetParent(map);
 		
+		
+		//place cursor at start location
 		GameObject cursorInstance = Instantiate(Cursor,new Vector3(startX,startY,0f),Quaternion.identity) as GameObject;
 		cursorInstance.GetComponent<PlayerScript>().location = new int[] {startX,startY};
 		
+		//instantiate a LevelManager object
 		GameObject lmInstance = Instantiate(LevelManager,new Vector3(0,0,0f),Quaternion.identity) as GameObject;
 		lmInstance.GetComponent<LevelManagerScript>().tileArray = new GameObject[mapX,mapY];
+		
 		
 		map.SetParent(lmInstance.transform);
 		cursorInstance.transform.SetParent(lmInstance.transform);
 		
+		//generate a tile grid of the given size
 		for (int y=0; y < mapY; y++)
 		{
 			for (int x=0; x < mapX; x++)
