@@ -12,6 +12,7 @@ public class MainMenuScript : MonoBehaviour {
 	public Button loadButton;
 	public Button newGameButton;
 	public Button creditsButton;
+	public Button quitButton;
 	
 	public GameObject fileButtonContainer;
 	public Button fileOneButton;
@@ -31,6 +32,7 @@ public class MainMenuScript : MonoBehaviour {
 		newGameButton.onClick.AddListener(NewGameHandle);
 		loadButton.onClick.AddListener(LoadGameHandle);
 		creditsButton.onClick.AddListener(CreditHandle);
+		quitButton.onClick.AddListener(QuitHandle);
 		fileOneButton.onClick.AddListener(FileOneHandle);
 		fileTwoButton.onClick.AddListener(FileTwoHandle);
 		fileThreeButton.onClick.AddListener(FileThreeHandle);
@@ -154,6 +156,11 @@ public class MainMenuScript : MonoBehaviour {
 		
 		SceneManager.LoadScene("CreditScene");
 		
+	}
+	
+	//Quits the game program
+	void QuitHandle(){
+		Application.Quit();
 	}
 	
 }

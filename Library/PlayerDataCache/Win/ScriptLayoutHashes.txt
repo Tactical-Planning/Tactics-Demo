@@ -1,6 +1,6 @@
 WindowsStandalone
 PlayerPath?
-F:/Unity Tutorials/Da Tactics/Da Tactics/Builds/Tactics Demo.exe
+C:/Users/BigLord/Desktop/builds/Tactics Demo.exe
 SceneListBegin?
 Assets/Scenes/MainMenuScene.unity
 Assets/Scenes/Scene1.unity
@@ -178,7 +178,7 @@ dfd33ff9ae3ce8d7ca1f22b475ec2387 UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 aac9c55ae7ba4b95b852a7d9c191acd1 Unity.TextMeshPro.dll:TMPro.TextMeshProUGUI
 0a006f3734181ba8b26758f0866152c0 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 486cd95c82d8305219c352c06b776e1f Assembly-CSharp.dll:.CreditScript
-0395d68a587511182e25b3ee1aca43cc Assembly-CSharp.dll:.MainMenuScript
+8b8010f7e7e2332520f0da2cdd012857 Assembly-CSharp.dll:.MainMenuScript
 e04611b8715e6833d2bd7010fc6be10b Unity.TextMeshPro.dll:TMPro.TMP_StyleSheet
 2f9af06a78208a67db480e9bfed4a076 Unity.TextMeshPro.dll:TMPro.TextMeshPro
 9318334b30e9f195f573b2ce00154b95 Unity.TextMeshPro.dll:TMPro.TMP_ColorGradient
@@ -187,4 +187,4 @@ e484ff6cb8fc96cf2c3d3cd003e493d8 Assembly-CSharp.dll:.GridGenerator
 86d1ece1ff83ee7651bc7d0cb88aba40 Assembly-CSharp.dll:.UnitScript
 486cd95c82d8305219c352c06b776e1f Assembly-CSharp.dll:.TileArrayScript
 e847e9ebc7dff1506fa4b8d7bf82f275 Assembly-CSharp.dll:.LevelManagerScript
-b35ba87e01b136c68315856c7db7894e Assembly-CSharp.dll:.PlayerScript
+31bb38c905b74ca51e8b59a2453c297f Assembly-CSharp.dll:.PlayerScript
