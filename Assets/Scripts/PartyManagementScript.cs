@@ -30,19 +30,23 @@ public class PartyManagementScript : MonoBehaviour {
 	public GameObject leftSheet;
 	public GameObject rightSheet;
 	
+	//buttons along bottom of screen for navigating to other scenes
 	public GameObject proceedContainer;
 	public Button saveButton;
 	public Button proceedButton;
 	public Button quitButton;
 	
+	//confirm prompt buttons for quitting to main menu
 	public GameObject quitConfirmationContainer;
 	public Button quitConfirmButton;
 	public Button quitDenyButton;
 	
+	//confirm prompt buttons for proceeding to next combat sequence
 	public GameObject proceedConfirmationContainer;
 	public Button confirmButton;
 	public Button denyButton;
 	
+	//text elements for character sheet
 	public GameObject infoContainer;
 	public Text characterNameText;
 	public Text levelText;
@@ -54,6 +58,7 @@ public class PartyManagementScript : MonoBehaviour {
 	public Text speedValueText;
 	public Text rangeValueText;
 	
+	//options displayed when selecting a unit
 	public GameObject buttonContainer;
 	public Button swapItemsButton;
 	public Button equipButton;
@@ -68,11 +73,13 @@ public class PartyManagementScript : MonoBehaviour {
 	// references to current object being selected
 	public GameObject prevSelectedButton;
 	
+	//data members for keeping track of who is trading with who, what inventory should be displaying, etc
 	public GameObject currentSelectedUnit;
 	public UnitScript currentUnitScript;
 	public GameObject currentSelectedItem;
 	
 	public GameObject itemToolTip;
+	
 	
 	public GameObject currentSelectedTargetUnit;
 	public UnitScript currentTargetUnitScript;
@@ -85,6 +92,7 @@ public class PartyManagementScript : MonoBehaviour {
 	
 	public GameObject equipToolTip;
 	public GameObject targetEquipToolTip;
+	
 	// flags to refer to current state
 	public bool choosingUnit;
 	public bool buttonContainerOpen;
@@ -103,7 +111,8 @@ public class PartyManagementScript : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		
+	
+		//add listeners to buttons in scene
 		swapItemsButton.onClick.AddListener(SwapItemsHandle);
 		equipButton.onClick.AddListener(SwapEquipHandle);
 		for(int i = 0; i<4; i++) {
@@ -112,6 +121,7 @@ public class PartyManagementScript : MonoBehaviour {
 		equipmentListContainer.transform.GetChild(0).GetChild(0).GetComponent<Button>().onClick.AddListener(TargetEquipHandle);
 		equipmentScrollbar.GetComponent<Scrollbar>().interactable = false;
 		
+		//get refence to gameManager and assign to dataMember for more concise use
 		gameManager = GameManager.instance.GetComponent<GameManager>();
 		gameManager.Load("/playerInfo.dat");
 	
@@ -124,19 +134,25 @@ public class PartyManagementScript : MonoBehaviour {
 			tempButton.GetComponent<Button>().onClick.AddListener(TargetItemHandle);
 		}
 		
-	
+		//initialize all indeces to 0
+		//these are used to maintain a reference to what unit/item is being referenced
 		partyUnitIndex = 0;
 		targetUnitIndex = 0;
 		itemListIndex = 0;
 		targetItemListIndex = 0;
 		
+		//iterate through party units to populate unit buttons
 		foreach(GameObject unit in gameManager.partyUnits) {
+			//add an empty slot to the end of every unit's item list
 			GameObject tempEmpty = Instantiate(emptyItemPrefab) as GameObject;
 			tempEmpty.SetActive(false);
 			unit.GetComponent<UnitScript>().itemList.Add(tempEmpty);
+			
+			//set UI fields for unit button
 			GameObject tempButton = unitButtonContainer.transform.GetChild(partyUnitIndex).gameObject;
 			tempButton.transform.GetChild(0).GetComponent<Text>().text = unit.GetComponent<UnitScript>().charName;
 			tempButton.transform.GetChild(1).GetComponent<Image>().sprite = unit.GetComponent<SpriteRenderer>().sprite;
+
 			tempButton.SetActive(true);
 			tempButton.GetComponent<Button>().onClick.AddListener(UnitHandle);
 			unitButtonList.Add(tempButton.GetComponent<Button>());
@@ -144,9 +160,11 @@ public class PartyManagementScript : MonoBehaviour {
 		}
 		
 		partyUnitIndex = 0;
+		//start scene with first unit in list selected
 		unitButtonContainer.transform.GetChild(partyUnitIndex).gameObject.GetComponent<Button>().Select();
 		prevSelectedButton = unitButtonContainer.transform.GetChild(partyUnitIndex).gameObject;
 		
+		//add scene navigation listeners
 		saveButton.onClick.AddListener(SaveHandle);
 		proceedButton.onClick.AddListener(ProceedHandle);
 		quitButton.onClick.AddListener(QuitToMenuHandle);
@@ -155,12 +173,13 @@ public class PartyManagementScript : MonoBehaviour {
 		quitConfirmButton.onClick.AddListener(QuitConfirmationHandle);
 		quitDenyButton.onClick.AddListener(QuitCancelHandle);
 		
+		//set maintained references to current objects to null
 		currentSelectedUnit = null;
 		currentSelectedTargetUnit = null;
 		currentSelectedItem = null;
 		currentSelectedTargetItem = null;
 		currentSelectedEquip = null;
-	// set flags
+		// set flags
 		choosingUnit = true;
 		buttonContainerOpen = false;
 		choosingItem = false;
@@ -175,10 +194,14 @@ public class PartyManagementScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		//if a new button is highlighted, play the move cursor sound
 		if (prevSelectedButton != EventSystem.current.currentSelectedGameObject) {
 			SoundManager.instance.MoveCursor();
 			prevSelectedButton = EventSystem.current.currentSelectedGameObject;
 		}
+		
+		//check scene state
+		//depending on the state, if a new button is selected, call a method which will update text fields, move UI elements, etc
 		if (choosingUnit && EventSystem.current.currentSelectedGameObject != currentSelectedUnit && EventSystem.current.currentSelectedGameObject != null && EventSystem.current.currentSelectedGameObject.transform.parent != proceedContainer.transform) {
 			currentSelectedUnit = EventSystem.current.currentSelectedGameObject;
 			UnitOnSelect();
@@ -203,6 +226,9 @@ public class PartyManagementScript : MonoBehaviour {
 			currentSelectedTargetEquip = EventSystem.current.currentSelectedGameObject;
 			TargetEquipOnSelect();
 		}
+		
+		//behavior for cancel input in different states
+		//mostly involves setting state flags and activating and deactivating different UI windows
 		if (Input.GetButtonDown("Cancel")) {
 			if (!choosingUnit) {
 				SoundManager.instance.MenuCancel();
@@ -261,6 +287,7 @@ public class PartyManagementScript : MonoBehaviour {
 				currentUnitScript.Equip(preEquip,currentSelectedEquip.transform.GetSiblingIndex());
 				choosingEquip = false;
 				choosingSlot = true;
+				//rather than delete buttons, they are set inactive and can be activated and populated when needed later
 				for(int i = 1; i<equipmentListContainer.transform.GetChild(0).childCount; i++){
 					equipmentListContainer.transform.GetChild(0).GetChild(i).gameObject.SetActive(false);
 					}
@@ -327,7 +354,7 @@ public class PartyManagementScript : MonoBehaviour {
 				break;
 			}
 		}
-		
+		//display the highlighted unit's items
 		targetItemContainer.SetActive(true);
 		targetUnitIndex = unitButtonList.IndexOf(EventSystem.current.currentSelectedGameObject.GetComponent<Button>());
 	}
@@ -359,7 +386,7 @@ public class PartyManagementScript : MonoBehaviour {
 		targetItemToolTip.transform.GetChild(4).GetComponent<Text>().text = currentTargetUnitScript.itemList[targetItemListIndex].GetComponent<ItemScript>().aoeRadius.ToString();
 		targetItemToolTip.SetActive(true);
 	}
-	
+	//when an equipment slot is highlighted, a tooltip displays the info for the equipment in that slot
 	void EquipOnSelect(){
 		
 		
@@ -370,17 +397,23 @@ public class PartyManagementScript : MonoBehaviour {
 		equipToolTip.transform.GetChild(2).GetComponent<Text>().text = tempEquip.equipDescription;
 		equipToolTip.SetActive(true);
 	}
-	
+	//When an equipment in the party equipment list is highlighted, the list scrolls, a tooltip is displayed,
+	// and the units stats are updated to display what effect equipping that item would have
 	void TargetEquipOnSelect(){
 		
-		RectTransform containerRect = equipmentListContainer.GetComponent<RectTransform>();
+		/*
+		in order to scroll through the list with the arrow keys we have to check if the button selected is outside the 
+		equipment window, and shift the buttons accordingly.
+		*/
 		
+		RectTransform containerRect = equipmentListContainer.GetComponent<RectTransform>();
+		//get a reference point for where the top and bottom points of the equipment window are
 		Vector3[] listOfCorners = new Vector3[4];
 		containerRect.GetWorldCorners(listOfCorners);
 		float bottom = listOfCorners[0][1];
 		float top = listOfCorners[1][1];
 		
-		
+		//count the number of buttons outside the equipment windows current view
 		float buttonsOutside = 0f;
 		for(int i = 0; i < (int)numButtons + 1;i++){
 			float buttonY = equipmentListContainer.transform.GetChild(0).GetChild(i).position.y;
@@ -390,13 +423,15 @@ public class PartyManagementScript : MonoBehaviour {
 		}
 		
 		if (buttonsOutside > 0) {
-	
+			
+			//get reference points for where the top and bottom points of the selected button are
 			Vector3[] buttonCorners = new Vector3[4];
 			currentSelectedTargetEquip.GetComponent<RectTransform>().GetWorldCorners(buttonCorners);
 			float buttonBottom = buttonCorners[0][1];
 			float buttonTop = buttonCorners[1][1];
 			float buttonHeight = buttonTop-buttonBottom;
 	
+			//scroll the list just enough to get the selected button fully in view.
 			if(buttonTop> top){
 				float diff = buttonTop-top;
 				float ratio = diff / buttonHeight;
@@ -408,11 +443,16 @@ public class PartyManagementScript : MonoBehaviour {
 			}
 		}
 		
+		//the actually equipping of equipment takes place as soon as a piece of equipment is highlighted, in order to show the updated stats in the character sheet
+		//if the player cancels out of this menu, the selected unit will re-equip whatever was equipped in that slot immediately.
+		
 		currentUnitScript.Unequip(gameManager.equipDict[currentUnitScript.equipmentList[currentSelectedEquip.transform.GetSiblingIndex()]].GetComponent<EquipmentScript>(),currentSelectedEquip.transform.GetSiblingIndex());
 		
+		//turn off the tooltip if the unequip button is selected
 		if (currentSelectedTargetEquip.transform.GetChild(0).GetComponent<Text>().text=="Unequip") {
 			targetEquipToolTip.SetActive(false);
 		} else {
+			//otherwise update it's position and the information it displays
 			EquipmentScript tempEquip = gameManager.equipDict[currentSelectedTargetEquip.transform.GetChild(0).GetComponent<Text>().text].GetComponent<EquipmentScript>();
 			
 			targetEquipToolTip.transform.GetChild(2).GetComponent<Text>().text = tempEquip.equipDescription;
@@ -423,7 +463,7 @@ public class PartyManagementScript : MonoBehaviour {
 			
 			currentUnitScript.Equip(tempEquip,currentSelectedEquip.transform.GetSiblingIndex());
 		}
-		
+		//update character sheet, to reflect the stat changes introduced by the piece of equipment
 		healthValueText.text = currentUnitScript.maxHealth.ToString();
 		agilityValueText.text = currentUnitScript.agility.ToString();
 		attackValueText.text = currentUnitScript.attack.ToString();
@@ -485,6 +525,8 @@ public class PartyManagementScript : MonoBehaviour {
 	//onClick listener for selecting an item to swap.
 	void ItemHandle(){
 		SoundManager.instance.MenuSelect();
+		
+		//set state flags
 		choosingItem = false;
 		choosingTargetUnit = true;
 		
@@ -492,8 +534,10 @@ public class PartyManagementScript : MonoBehaviour {
 		DisengageButtons(itemButtonList);
 		
 		ReengageUnitButtons(TargetUnitHandle);
+		//a unit can't trade items with itself
 		unitButtonList[partyUnitIndex].interactable = false;
 		
+		//choose which unit in the unit list to highlight first
 		if (partyUnitIndex!=0) {
 			unitButtonList[0].Select();
 			prevSelectedButton = unitButtonList[0].gameObject;
@@ -501,12 +545,14 @@ public class PartyManagementScript : MonoBehaviour {
 			unitButtonList[1].Select();
 			prevSelectedButton = unitButtonList[1].gameObject;
 		}
-		
+		//active right hand ui window to display unit inventories as you highlight them
 		rightSheet.SetActive(true);
 		targetItemContainer.SetActive(true);
 		
 	}
 	
+	//handler for choosing a unit to swap items with
+	//the target unit's itemList is displayed, and the player can swap items between the two selected units
 	void TargetUnitHandle() {
 		SoundManager.instance.MenuSelect();
 		choosingTargetUnit = false;
@@ -523,14 +569,18 @@ public class PartyManagementScript : MonoBehaviour {
 		return;
 	}
 	
+	//handler for when a target item has been selected for swapping
+	//
 	void TargetItemHandle() {
+		//play sound effect
 		SoundManager.instance.Swap();
 		
+		//swap the items in the units' inventories
 		GameObject tempItem = currentUnitScript.itemList[itemListIndex];
 		currentUnitScript.itemList[itemListIndex] = currentTargetUnitScript.itemList[targetItemListIndex];
 		currentTargetUnitScript.itemList[targetItemListIndex] = tempItem;
 		
-		
+		// maintain empty slot items in both units' inventories
 		if(tempItem.GetComponent<ItemScript>().itemName == "Empty Slot" &&(currentUnitScript.itemList[itemListIndex].GetComponent<ItemScript>().itemName != "Empty Slot")){
 			currentUnitScript.itemList.Add(tempItem);
 			currentTargetUnitScript.itemList.RemoveAt(targetItemListIndex);
@@ -548,7 +598,7 @@ public class PartyManagementScript : MonoBehaviour {
 		itemButtonList.Clear();
 		
 		
-		//set new itemButtons
+		//set new itemButtons for left hand unit
 
 		for(int i =0; i < numItemSlots; i++) {
 			GameObject tempButton = itemContainer.transform.GetChild(i).gameObject;
@@ -567,7 +617,7 @@ public class PartyManagementScript : MonoBehaviour {
 		targetItemButtonList.Clear();
 		
 		
-		//set new itemButtons
+		//set new itemButtons for right hand unit
 		for(int i =0; i < numItemSlots; i++) {
 			GameObject tempButton = targetItemContainer.transform.GetChild(i).gameObject;
 			tempButton.transform.GetChild(0).GetComponent<Text>().text = currentTargetUnitScript.itemList[i].GetComponent<ItemScript>().itemName;
@@ -577,17 +627,24 @@ public class PartyManagementScript : MonoBehaviour {
 				break;
 			}
 		}
+		
+		//select/highlight the slot the player just interacted with
 		targetItemButtonList[targetItemListIndex].Select();
 		prevSelectedButton = targetItemButtonList[targetItemListIndex].gameObject;
 		TargetItemOnSelect();
 	}
 	
+	//makes all the buttons in a list non-interactable
+	//List<Button> buttonList: list of buttons to make non-interactable
 	void DisengageButtons(List<Button> buttonList) {
 		foreach(Button button in buttonList) {
 			button.interactable = false;
 		}
 	}
 	
+	//makes the unit buttons interactable
+	//changes the listener functions on the unit buttons to the handler provided as an argument to the method
+	//MyHandler handler: function delegate to be assigned to the unit buttons upon state change
 	void ReengageUnitButtons(MyHandler handler) {
 		
 		UnityAction tempAction = new UnityAction(handler);
@@ -601,12 +658,16 @@ public class PartyManagementScript : MonoBehaviour {
 		prevSelectedButton = currentSelectedUnit;
 	}
 	
+	
+	//makes all the buttons in a list interactable
+	//List<Button> buttonList: list of buttons to make interactable
 	void ReengageItemButtons(List<Button> buttonList) {
 		foreach(Button button in buttonList) {
 			button.interactable = true;
 		}
 	}
-	
+	//handler for the proceed button
+	//opens a confirmation dialogue before allowing the player to move on to the next combat sequence
 	void ProceedHandle() {
 		SoundManager.instance.MenuSelect();
 		//open proceed menu
@@ -621,14 +682,15 @@ public class PartyManagementScript : MonoBehaviour {
 		confirmButton.Select();
 		prevSelectedButton = confirmButton.gameObject;
 	}
-	
+	//calls proceed and loads the save menu
 	void SaveHandle() {
 		SoundManager.instance.MenuSelect();
 		Proceed();
 		//load save menu scene
 		SceneManager.LoadScene("SaveMenuScene");
 	}
-	
+	//part of the procedure for transitioning to another scene from the party management scene
+	//saves game data, and removes "empty" items from the ends of party members' items lists (they're only used in party management)
 	void Proceed() {
 		SoundManager.instance.MenuSelect();
 		foreach(GameObject unit in gameManager.partyUnits) {
@@ -637,13 +699,13 @@ public class PartyManagementScript : MonoBehaviour {
 		
 		GameManager.instance.GetComponent<GameManager>().Save("/playerInfo.dat");
 	}
-	
+	//handler for confirmation that the player wishes to proceed to the next level.
 	void ConfirmationHandle(){
 		SoundManager.instance.MenuSelect();
 		Proceed();
 		gameManager.InitGame();
 	}
-	
+	//called when the player backs out of the confirmation dialogue for proceeding to the next level
 	void CancelHandle() {
 		SoundManager.instance.MenuCancel();
 		proceedBool = false;
@@ -657,7 +719,8 @@ public class PartyManagementScript : MonoBehaviour {
 		proceedButton.Select();
 		prevSelectedButton = proceedButton.gameObject;
 	}
-	
+	//handler for the quit button
+	//opens a confirmation dialogue
 	void QuitToMenuHandle() {
 		SoundManager.instance.MenuSelect();
 		//open quit confirmation menu
@@ -672,12 +735,12 @@ public class PartyManagementScript : MonoBehaviour {
 		quitConfirmButton.Select();
 		prevSelectedButton = quitConfirmButton.gameObject;
 	}
-	
+	//called when the player presses the button confirming that they wish to quit to the main menu
 	void QuitConfirmationHandle(){
 		SoundManager.instance.QuitGame();
 		SceneManager.LoadScene("MainMenuScene");
 	}
-	
+	//called when the player backs out of the quit confirmation window
 	void QuitCancelHandle() {
 		SoundManager.instance.MenuCancel();
 		quitBool = false;
@@ -691,31 +754,42 @@ public class PartyManagementScript : MonoBehaviour {
 		quitButton.Select();
 		prevSelectedButton = quitButton.gameObject;
 	}
-	
+	//handler for the equipment menu button
+	//when called, the equipment being used by the selected unit is display, and a slot may be selected to equip something to
 	void SwapEquipHandle(){
 		SoundManager.instance.MenuSelect();
+	
+		//set state flags
 		buttonContainerOpen = false;
 		choosingSlot = true;
 		
 		currentSelectedEquip = null;
-		
+		//hide management options
 		buttonContainer.SetActive(false);
 		for(int i = 0; i < 4; i++){
 			EquipmentScript tempEquip = gameManager.equipDict[currentUnitScript.equipmentList[i]].GetComponent<EquipmentScript>();
 			equipContainer.transform.GetChild(i).GetChild(0).GetComponent<Text>().text = tempEquip.equipName; 
 		}
+		//activate equipment slot buttons
 		equipContainer.SetActive(true);
+		//select first button
 		equipContainer.transform.GetChild(0).GetComponent<Button>().Select();
 		prevSelectedButton = equipContainer.transform.GetChild(0).gameObject;
 	}
 	
+	//Handler for when an equipment slot is chosen to equip something to.
+	//displays the list of usable equipment in the party inventory
 	void EquipHandle(){
 		SoundManager.instance.MenuSelect();
 		
+		//update data member that stores what was equipped in this slot when we entered this context
+		//this is used to revert to that state if we back out of the equipment selection
 		preEquip = gameManager.equipDict[currentSelectedEquip.transform.GetChild(0).GetComponent<Text>().text].GetComponent<EquipmentScript>();
 		
+		//set state flags
 		choosingSlot = false;
 		choosingEquip = true;
+		//hide equipment slots, show character sheet in order to display stats changing as different equipments are considered
 		equipContainer.SetActive(false);
 		infoContainer.SetActive(true);
 		rightSheet.SetActive(true);
@@ -724,8 +798,10 @@ public class PartyManagementScript : MonoBehaviour {
 		
 		numButtons = 0f;
 		int i = 1;
+		//iterate through party inventory of equipment
 		foreach(string equipName in gameManager.partyEquipList) {
 			if ( ((currentSelectedEquip.transform.GetSiblingIndex()==0)&&(gameManager.equipDict[equipName].GetComponent<EquipmentScript>().slot=="W")) || ((currentSelectedEquip.transform.GetSiblingIndex()!=0)&&(gameManager.equipDict[equipName].GetComponent<EquipmentScript>().slot=="A")) ){
+				//only instantiate new buttons if no unused button exists
 				if (i >= equipmentListContainer.transform.GetChild(0).childCount){
 					GameObject tempButton = Instantiate(equipmentButtonPrefab) as GameObject;
 					tempButton.transform.SetParent(equipmentListContainer.transform.GetChild(0));
@@ -733,6 +809,7 @@ public class PartyManagementScript : MonoBehaviour {
 					tempButton.GetComponent<Button>().onClick.AddListener(TargetEquipHandle);
 					tempButton.GetComponent<RectTransform>().localScale = new Vector3(1,1,1);
 				} else {
+					//otherwise change values in existing button, and reuse button
 					GameObject tempButton = equipmentListContainer.transform.GetChild(0).GetChild(i).gameObject;
 					tempButton.transform.GetChild(0).GetComponent<Text>().text = equipName;
 					tempButton.SetActive(true);
@@ -741,7 +818,7 @@ public class PartyManagementScript : MonoBehaviour {
 				numButtons++;
 			}	
 		}
-		
+		//initialize values for scrolling
 		equipmentScrollbar.GetComponent<Scrollbar>().value = 1;
 		currentSelectedTargetEquip = null;
 		equipmentListContainer.transform.GetChild(0).GetChild(0).GetComponent<Button>().Select();
@@ -749,27 +826,35 @@ public class PartyManagementScript : MonoBehaviour {
 		
 	}
 	
+	//Handler for when a target equipment button is pressed
+	//swaps the equipment with the equipment currently in the slot being equipped by the unit being managed
 	void TargetEquipHandle() {
+		//play sound effect
 		SoundManager.instance.Swap();
 		
+		//update state flags
 		choosingEquip = false;
 		choosingSlot = true;
 		
+		//if the "equipment" button selected is actually the unequip button, simply empty the slot being equipped
 		if (currentSelectedTargetEquip.transform.GetChild(0).GetComponent<Text>().text=="Unequip"){
 			currentSelectedEquip.transform.GetChild(0).GetComponent<Text>().text = "Empty";
 		} else {
+			//otherwise trade equipments from the party inventory to the equipment slot being considered
 			currentSelectedEquip.transform.GetChild(0).GetComponent<Text>().text = currentSelectedTargetEquip.transform.GetChild(0).GetComponent<Text>().text;
 			gameManager.partyEquipList.Remove(currentSelectedEquip.transform.GetChild(0).GetComponent<Text>().text);
 		}
-		
+		//if the slot being equipped wasn't empty, add what was previously in the slot to the pary inventory
 		if (preEquip.equipName != "Empty") {
 			gameManager.partyEquipList.Add(preEquip.equipName);
 		}
 		
 		equipContainer.SetActive(true);
+		//make sure the button that was pressed is highlighted again 
 		currentSelectedEquip.GetComponent<Button>().Select();
 		prevSelectedButton = currentSelectedEquip;
 		
+		//deactivate UI elements when finished
 		for(int i = 1; i<equipmentListContainer.transform.GetChild(0).childCount; i++){
 			equipmentListContainer.transform.GetChild(0).GetChild(i).gameObject.SetActive(false);
 		}
