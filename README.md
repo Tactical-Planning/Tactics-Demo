@@ -9,6 +9,8 @@ The current build is a demo of the features present in the system developed, wit
 The project was designed and implemented almost entirely by pair coding, both developers working on a single machine, trading roles occasionally. Near the end of development of the
 current build, tasks were split up and handled by utilizing this Git repository.
 
+A playable build of the game can be downloaded at https://tactical-planning.itch.io/tactics-demo
+
 ## Controls:
 
 ### Keyboard:
