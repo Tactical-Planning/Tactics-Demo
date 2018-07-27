@@ -1,6 +1,6 @@
-###Tactics Game Demo
+# Tactics Game Demo
 
-##Designed and Programmed by Andy Smith and Jack Brigleb
+## Designed and Programmed by Andy Smith and Jack Brigleb
 
 The aim of the this project is to create the infrastructure of a Tactical Role Playing Game, emulating the design of series such as Fire Emblem or Final Fantasy Tactics. The project was built so that multiple games could be made utilizing what has been created so far. The code was written in such a way as to minimize effort required to change particular design decisions, and allow for as many extensions to the project or shifts in gameplay design as possible.
 
@@ -9,9 +9,9 @@ The current build is a demo of the features of the system developed, with “pro
 The project was designed and implemented almost entirely by pair coding, both developers working on a single machine, trading roles occasionally. Near the end of development of the
 current build, tasks were split up and handled by utilizing this Git repository.
 
-##Controls:
+## Controls:
 
-#Keyboard:
+### Keyboard:
 
 Select/Submit: Z
 
@@ -30,7 +30,7 @@ Unit Cycle: , and .
 
 
 
-#Gamepad:
+### Gamepad:
 
 Select/Submit : A Button
  Joystick Button 0
@@ -55,7 +55,7 @@ Unit Cycle: Left and Right Bumper / L1 and R1
 
 
 
-#*Sound Credits:
+# *Sound Credits:
 
 Some of the songs and/or sound effects in this project were created by ViRiX Dreamcore (David Mckee) as well as KillaMaaki
 
