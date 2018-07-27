@@ -33,25 +33,25 @@ Unit Cycle: , and .
 ### Gamepad:
 
 Select/Submit : A Button
- Joystick Button 0
+		Joystick Button 0
 
-Multi-Select: Right Trigger/R2 + A button
-          10th Axis + Joystick Button 0
+Multi-Select: 	Right Trigger/R2 + A button
+		10th Axis + Joystick Button 0
 
-Cancel/Back: B Button 
-           Joystick Button 1
+Cancel/Back: 	B Button 
+		Joystick Button 1
 
-Cursor: Left Stick 
-	 Joystick X/Y Axis
+Cursor: 	Left Stick 
+		Joystick X/Y Axis
 
-Fast Move: X Button
-	       Joystick Button 2
+Fast Move: 	X Button
+		Joystick Button 2
 
-Zoom: Left Trigger/L2
-	9th Axis
+Zoom: 		Left Trigger/L2
+		9th Axis
 
-Unit Cycle: Left and Right Bumper / L1 and R1
-	Joystick Button 4 and Joystick Button 5
+Unit Cycle: 	Left and Right Bumper / L1 and R1
+		Joystick Button 4 and Joystick Button 5
 
 
 
