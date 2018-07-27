@@ -32,8 +32,7 @@ Unit Cycle: , and .
 
 ### Gamepad:
 
-Select/Submit : A Button
-
+Select/Submit : A Button *OR*
 		Joystick Button 0
 
 Multi-Select: 	Right Trigger/R2 + A button *OR*
