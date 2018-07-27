@@ -134,7 +134,7 @@ public class UnitScript : MonoBehaviour {
 	}
 	
 	//Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		// if the unit is moving, update the unit's position
 		if(moving){
 			

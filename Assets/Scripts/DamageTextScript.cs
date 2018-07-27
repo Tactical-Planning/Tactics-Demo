@@ -25,10 +25,10 @@ public class DamageTextScript : MonoBehaviour {
 		
 	}
 	
-	void Update(){
+	void FixedUpdate(){
 		//float the text up from the unit that took damage.
-		float fracDistance = (Time.time - startTime)*.5f/lifeSpan;
-		float fracAlpha = (Time.time - startTime)*.05f/lifeSpan;
+		float fracDistance = Time.deltaTime*(Time.time - startTime)*50f/lifeSpan;
+		float fracAlpha = Time.deltaTime*(Time.time - startTime)*5f/lifeSpan;
 		
 		if(transform.position.y < destination.y){
 			transform.position = Vector3.Lerp(startPos, destination, fracDistance);
