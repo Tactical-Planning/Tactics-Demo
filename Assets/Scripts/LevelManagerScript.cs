@@ -275,6 +275,7 @@ public class LevelManagerScript : MonoBehaviour {
 		GameManager.instance.GetComponent<GameManager>().levelNumber += 1;
 
 		if (GameManager.instance.GetComponent<GameManager>().levelNumber > GameManager.instance.GetComponent<GameManager>().levelCount) {
+			GameManager.instance.GetComponent<GameManager>().inCombat = false;
 			SceneManager.LoadScene("CreditScene");
 			return;
 		}
