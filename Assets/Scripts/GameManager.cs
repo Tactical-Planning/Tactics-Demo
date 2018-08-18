@@ -11,18 +11,18 @@ public class GameManager : MonoBehaviour
 
 	public static GameManager instance = null;     
 	private LevelGenerator levelGenerator;
-	public List<string> levelNames;
+	[SerializeField] List<string> levelNames;
 	public int levelNumber;
 	public int levelCount;
 	public List<GameObject> partyUnits;
 	public List<string> partyEquipList;
-	public List<string> initialEquipList;
+	[SerializeField] List<string> initialEquipList;
 	
-	public List<GameObject> unitPrefabs;
-	public List<GameObject> itemPrefabs;
+	[SerializeField] List<GameObject> unitPrefabs;
+	[SerializeField] List<GameObject> itemPrefabs;
 	
 	public Dictionary<String,GameObject> equipDict;
-	public List<GameObject> equipList;
+	[SerializeField] List<GameObject> equipList;
 	
 	public float playTime;
 	

@@ -11,17 +11,16 @@ public class LevelManagerScript : MonoBehaviour {
 
 	// data members for camera movement
 	public GameObject activeTile;
-	public Vector3 activePosition;
-	public float[] margin;
-	public float[] edgeMargin;
-	public float totalDist;
-	public float prevZIndex;
-	public Vector3 newCamera;
+	private Vector3 activePosition;
+	private float[] margin;
+	private float[] edgeMargin;
+	private float totalDist;
+	private float prevZIndex;
+	private Vector3 newCamera;
 	
 	// data members for turn logistics
-	public int[] startCoords;
-	public int activeTeam;
-	public int turnCounter;
+	[SerializeField] int[] startCoords;
+	private int turnCounter;
 	public int phaseCounter;
 	
 	// representations of the tile grid
@@ -39,19 +38,19 @@ public class LevelManagerScript : MonoBehaviour {
 	
 	// references to PlayerScript and AIScript
 	public PlayerScript player;
-	public AIScript aiController;
+	[SerializeField] AIScript aiController;
 
 	// list of conditions the player can meet to win
-	public List<string> winConditions;
+	[SerializeField] List<string> winConditions;
 	
 	// current level number
 	public int levelNumber;
 	
 	// flag for checking if the level can end after the player has finished their turn
-	public bool levelCanEnd;
+	private bool levelCanEnd;
 	
 	// startTime is used to track total play time
-	public float startTime;
+	private float startTime;
 
 	// Use this for initialization
 	void Start () {

@@ -7,8 +7,8 @@ public class DamageTextScript : MonoBehaviour {
 	private Vector3 destination;
 	private Vector3 startPos;
 	public int damage;
-	public float lifeSpan;
-	public float startTime;
+	[SerializeField] float lifeSpan;
+	private float startTime;
 	
 	void Awake(){
 		textMesh = gameObject.GetComponent<TextMesh>();

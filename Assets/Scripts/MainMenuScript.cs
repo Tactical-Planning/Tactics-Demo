@@ -8,20 +8,20 @@ using UnityEngine.EventSystems;
 
 public class MainMenuScript : MonoBehaviour {
 	
-	public GameObject menuContainer;
-	public Button loadButton;
-	public Button newGameButton;
-	public Button creditsButton;
-	public Button quitButton;
+	[SerializeField] GameObject menuContainer;
+	[SerializeField] Button loadButton;
+	[SerializeField] Button newGameButton;
+	[SerializeField] Button creditsButton;
+	[SerializeField] Button quitButton;
 	
-	public GameObject fileButtonContainer;
-	public Button fileOneButton;
-	public Button fileTwoButton;
-	public Button fileThreeButton;
+	[SerializeField] GameObject fileButtonContainer;
+	[SerializeField] Button fileOneButton;
+	[SerializeField] Button fileTwoButton;
+	[SerializeField] Button fileThreeButton;
 	
-	public bool fileSelect;
+	bool fileSelect;
 	
-	public GameObject prevFileButton;
+	GameObject prevFileButton;
 	
 	// Use this for initialization
 	void Start () {

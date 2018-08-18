@@ -4,15 +4,15 @@ using System.Collections.Generic;
 
 public class LevelGenerator : MonoBehaviour {
 
-	public GameObject tile;
-	public GameObject tileArray;
-	public GameObject LevelManager;
-	public GameObject Cursor;
-	public GameObject unit;
-	public GameObject unitHorseman;
-	public GameObject unitArcher;
-	public GameObject unitKnight;
-	public GameObject enemyUnit;
+	[SerializeField] GameObject tile;
+	[SerializeField] GameObject tileArray;
+	[SerializeField] GameObject LevelManager;
+	[SerializeField] GameObject Cursor;
+	[SerializeField] GameObject unit;
+	[SerializeField] GameObject unitHorseman;
+	[SerializeField] GameObject unitArcher;
+	[SerializeField] GameObject unitKnight;
+	[SerializeField] GameObject enemyUnit;
 	
 	private Transform grid;
 	private Transform map;

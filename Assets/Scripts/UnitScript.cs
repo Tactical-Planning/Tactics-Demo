@@ -11,8 +11,8 @@ public class UnitScript : MonoBehaviour {
 	public GameObject tilePrev;
 	
 	// references for leveling up
-	public GameObject levelUpSheet;
-	public GameObject progressBar;
+	private GameObject levelUpSheet;
+	private GameObject progressBar;
 	
 	// data members for AI units to determine what action to take
 	public int priority; 
@@ -27,23 +27,23 @@ public class UnitScript : MonoBehaviour {
 	public int experience;
 	public int health;
 	public int maxHealth;
-	public float maxHealthGrowth;
+	[SerializeField] float maxHealthGrowth;
 	public int speed;
 	public int range;
 	public int triangle;
 	public int numAttacks;
 	public int attack;
-	public float attackGrowth;
+	[SerializeField] float attackGrowth;
 	public int defense;
-	public float defenseGrowth;
+	[SerializeField] float defenseGrowth;
 	public int agility;
-	public float agilityGrowth;
+	[SerializeField] float agilityGrowth;
 	
-	public int[] statArray;
-	public float[] statGrowthArray;
+	private int[] statArray;
+	private float[] statGrowthArray;
 	
-	public bool gainingExperience;
-	public bool experienceUpdating;
+	private bool gainingExperience;
+	private bool experienceUpdating;
 	
 	// lists of tiles to determine what is in range
 	public List<List<int>> availableTiles;
@@ -52,10 +52,10 @@ public class UnitScript : MonoBehaviour {
 	public List<List<int>> availableImmediateAttacks;
 	
 	// pathing data members
-	public float[,] pathCostTable;
-	public List<List<int>> tilesToCheck;
-	public int[,] pathPrevXTable;
-	public int[,] pathPrevYTable;
+	private float[,] pathCostTable;
+	private List<List<int>> tilesToCheck;
+	private int[,] pathPrevXTable;
+	private int[,] pathPrevYTable;
 	public List<List<int>> pathToFollow;
 	
 	// data members for moving
@@ -92,7 +92,7 @@ public class UnitScript : MonoBehaviour {
 	// flag to see if unit is alive or dead
 	public bool dead;
 	
-	public GameObject damageText;
+	[SerializeField] GameObject damageText;
 
 	//Use this for initialization
 	void Start () {

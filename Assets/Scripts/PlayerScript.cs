@@ -17,59 +17,59 @@ public class PlayerScript : MonoBehaviour {
 
 	
 	//player menu data members
-	public GameObject playerMenu;
-	public bool menuOpen;
-	public bool menuAction;
-	public bool moveAction;
-	public bool attackTarget;
-	public bool postMove;
+	[SerializeField] GameObject playerMenu;
+	private bool menuOpen;
+	private bool menuAction;
+	private bool moveAction;
+	private bool attackTarget;
+	private bool postMove;
 	
 	//player menu buttons
-	public Button moveButton;
-	public Button attackButton; 
-	public Button inspectButton;
-	public Button itemButton;
-	public Button waitButton;
-	public Button endTurnButton;
+	[SerializeField] Button moveButton;
+	[SerializeField] Button attackButton; 
+	[SerializeField] Button inspectButton;
+	[SerializeField] Button itemButton;
+	[SerializeField] Button waitButton;
+	[SerializeField] Button endTurnButton;
 	
 	//inspect menu data members;
-	public GameObject inspectSheet;
-	public bool inspectSheetOpen;
+	[SerializeField] GameObject inspectSheet;
+	private bool inspectSheetOpen;
 	
 	//location of the levelUpSheet
-	public Vector3 levelUpSheetLocation;
+	private Vector3 levelUpSheetLocation;
 	
 	//inspect sheet / level up sheet text elements
-	public Text characterNameText;
-	public Text levelText;
-	public Text classText;
-	public Text healthValueText;
-	public Text agilityValueText;
-	public Text attackValueText;
-	public Text defenseValueText;
-	public Text speedValueText;
-	public Text rangeValueText;
-	public Text experienceValueText;
+	private Text characterNameText;
+	private Text levelText;
+	private Text classText;
+	private Text healthValueText;
+	private Text agilityValueText;
+	private Text attackValueText;
+	private Text defenseValueText;
+	private Text speedValueText;
+	private Text rangeValueText;
+	private Text experienceValueText;
 	
-	public Text nameText;
-	public Text healthText;
+	private Text nameText;
+	private Text healthText;
 	
 	//Info sheet data members
 	public GameObject infoSheet;
 	
-	public Text infoNameText;
-	public Text infoClassText;
-	public Text infoHealthText;
+	private Text infoNameText;
+	private Text infoClassText;
+	private Text infoHealthText;
 	
 	//item menu data members
-	public GameObject itemMenu;
-	public bool itemMenuOpen;
-	public bool itemTargeting;
+	private GameObject itemMenu;
+	private bool itemMenuOpen;
+	private bool itemTargeting;
 	public bool combatEngaged;
 	
-	public Text itemNameText;
+	private Text itemNameText;
 	
-	public Text itemDescriptionText;
+	private Text itemDescriptionText;
 	
 	// map zooming data
 	public int zIndex = 0;
@@ -80,20 +80,20 @@ public class PlayerScript : MonoBehaviour {
 	private bool cyclebool;
 	
 	// temporary Lists and GameObjects for use throughout script
-	public GameObject currentUnit;
-	public List<GameObject> selectedObjectList;
+	private GameObject currentUnit;
+	private List<GameObject> selectedObjectList;
 	private List<List<GameObject>> highlightsList;
 	private List<List<GameObject>> attackHighlightsList;
 	private List<GameObject> targetHighlightsList;
-	public GameObject tileHighlight;
-	public GameObject attackHighlight;
-	public GameObject supportHighlight;
+	[SerializeField] GameObject tileHighlight;
+	[SerializeField]GameObject attackHighlight;
+	[SerializeField] GameObject supportHighlight;
 	
-	public GameObject prevSelectedButton;
-	public int prevItemIndex; 
+	private GameObject prevSelectedButton;
+	private int prevItemIndex; 
 	
 	// reference to the Level Manager
-	public LevelManagerScript lmInstance;
+	private LevelManagerScript lmInstance;
 	
 	
 	// initialization

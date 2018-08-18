@@ -6,27 +6,27 @@ public class SoundManager : MonoBehaviour {
 	public static SoundManager instance = null;  
 
 	// combat sounds
-	public AudioClip menuSelect;
-	public AudioClip menuCancel;
-	public AudioClip moveCursor;
-	public AudioClip expGain;
-	public AudioClip statUp;
-	public AudioClip levelUp;
-	public AudioClip laserGun;
-	public AudioClip phaseChange;
+	[SerializeField] AudioClip menuSelect;
+	[SerializeField] AudioClip menuCancel;
+	[SerializeField] AudioClip moveCursor;
+	[SerializeField] AudioClip expGain;
+	[SerializeField] AudioClip statUp;
+	[SerializeField] AudioClip levelUp;
+	[SerializeField] AudioClip laserGun;
+	[SerializeField] AudioClip phaseChange;
 	
 	// main menu sounds
-	public AudioClip newGame;
-	public AudioClip loadGame;
-	public AudioClip openFileSelect;
-	public AudioClip closeFileSelect;
-	public AudioClip navigateMenu;
-	public AudioClip saveGame;
-	public AudioClip quitGame;
-	public AudioClip swap;
-	public AudioClip endLevel;
+	[SerializeField] AudioClip newGame;
+	[SerializeField] AudioClip loadGame;
+	[SerializeField] AudioClip openFileSelect;
+	[SerializeField] AudioClip closeFileSelect;
+	[SerializeField] AudioClip navigateMenu;
+	[SerializeField] AudioClip saveGame;
+	[SerializeField] AudioClip quitGame;
+	[SerializeField] AudioClip swap;
+	[SerializeField] AudioClip endLevel;
 	
-	public AudioSource audioSource;
+	[SerializeField] AudioSource audioSource;
 
 	// Use this for initialization
 	void Start () {

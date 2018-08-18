@@ -13,7 +13,7 @@ public class ItemScript : MonoBehaviour{
 	public int range;
 	public int aoeRadius;
 	//public Image image;
-	public AudioClip sound;
+	[SerializeField] AudioClip sound;
 	
 	private LevelManagerScript levelManagerScript;
 	public List<List<int>> validTiles;

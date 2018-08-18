@@ -5,17 +5,17 @@ using System.Linq;
 
 public class AIScript : MonoBehaviour {
 
-	public LevelManagerScript lmInstance;
-	public string friendlyTag;
+	[SerializeField] LevelManagerScript lmInstance;
+	private string friendlyTag;
 	
 	private int numUnits;
 	private int unitsActed;
-	public bool unitActing;
+	private bool unitActing;
 	
 	public GameObject activeUnit;
 	
-	public GameObject attackHighlight;
-	public GameObject enemyCursor;
+	[SerializeField] GameObject attackHighlight;
+	[SerializeField] GameObject enemyCursor;
 
 	// Use this for initialization
 	void Start () {

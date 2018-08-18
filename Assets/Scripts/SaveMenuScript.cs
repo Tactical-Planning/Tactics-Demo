@@ -10,16 +10,16 @@ using UnityEngine.EventSystems;
 public class SaveMenuScript : MonoBehaviour {
 
 	// references to buttons in the scene
-	public Button proceedButton;
-	public Button saveButton;
-	public Button fileOneButton;
-	public Button fileTwoButton;
-	public Button fileThreeButton;
-	public GameObject saveConfirm;
+	[SerializeField] Button proceedButton;
+	[SerializeField] Button saveButton;
+	[SerializeField] Button fileOneButton;
+	[SerializeField] Button fileTwoButton;
+	[SerializeField] Button fileThreeButton;
+	[SerializeField] GameObject saveConfirm;
 	
-	public bool fileSelectOpen;
+	private bool fileSelectOpen;
 	
-	public GameObject prevButtonSelected;
+	private GameObject prevButtonSelected;
 
 	// Use this for initialization
 	void Start () {

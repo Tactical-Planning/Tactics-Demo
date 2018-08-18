@@ -11,103 +11,103 @@ public class PartyManagementScript : MonoBehaviour {
 	// reference to GameManager
 	GameManager gameManager;
 	
-	public GameObject emptyItemPrefab;
-	public GameObject equipmentButtonPrefab;
+	[SerializeField] GameObject emptyItemPrefab;
+	[SerializeField] GameObject equipmentButtonPrefab;
 	
 	// indexes
-	public int partyUnitIndex;
-	public int targetUnitIndex;
-	public int itemListIndex;
-	public int targetItemListIndex;
+	private int partyUnitIndex;
+	private int targetUnitIndex;
+	private int itemListIndex;
+	private int targetItemListIndex;
 	
 	// lists for Buttons
-	public List<Button> itemButtonList;
-	public List<Button> targetItemButtonList;
-	public List<Button> unitButtonList;
+	private List<Button> itemButtonList = new List<Button>();
+	private List<Button> targetItemButtonList = new List<Button>();
+	private List<Button> unitButtonList = new List<Button>();
 	
 	// UI elements
-	public GameObject unitButtonContainer;
-	public GameObject leftSheet;
-	public GameObject rightSheet;
+	[SerializeField] GameObject unitButtonContainer;
+	[SerializeField] GameObject leftSheet;
+	[SerializeField] GameObject rightSheet;
 	
 	//buttons along bottom of screen for navigating to other scenes
-	public GameObject proceedContainer;
-	public Button saveButton;
-	public Button proceedButton;
-	public Button quitButton;
+	[SerializeField] GameObject proceedContainer;
+	[SerializeField] Button saveButton;
+	[SerializeField] Button proceedButton;
+	[SerializeField] Button quitButton;
 	
 	//confirm prompt buttons for quitting to main menu
-	public GameObject quitConfirmationContainer;
-	public Button quitConfirmButton;
-	public Button quitDenyButton;
+	[SerializeField] GameObject quitConfirmationContainer;
+	[SerializeField] Button quitConfirmButton;
+	[SerializeField] Button quitDenyButton;
 	
 	//confirm prompt buttons for proceeding to next combat sequence
-	public GameObject proceedConfirmationContainer;
-	public Button confirmButton;
-	public Button denyButton;
+	[SerializeField] GameObject proceedConfirmationContainer;
+	[SerializeField] Button confirmButton;
+	[SerializeField] Button denyButton;
 	
 	//text elements for character sheet
-	public GameObject infoContainer;
-	public Text characterNameText;
-	public Text levelText;
-	public Text classText;
-	public Text healthValueText;
-	public Text agilityValueText;
-	public Text attackValueText;
-	public Text defenseValueText;
-	public Text speedValueText;
-	public Text rangeValueText;
+	[SerializeField] GameObject infoContainer;
+	[SerializeField] Text characterNameText;
+	[SerializeField] Text levelText;
+	[SerializeField] Text classText;
+	[SerializeField] Text healthValueText;
+	[SerializeField] Text agilityValueText;
+	[SerializeField] Text attackValueText;
+	[SerializeField] Text defenseValueText;
+	[SerializeField] Text speedValueText;
+	[SerializeField] Text rangeValueText;
 	
 	//options displayed when selecting a unit
-	public GameObject buttonContainer;
-	public Button swapItemsButton;
-	public Button equipButton;
+	[SerializeField] GameObject buttonContainer;
+	[SerializeField] Button swapItemsButton;
+	[SerializeField] Button equipButton;
 	
-	public GameObject itemContainer;
-	public GameObject targetItemContainer;
+	[SerializeField] GameObject itemContainer;
+	[SerializeField] GameObject targetItemContainer;
 	
-	public GameObject equipContainer;
-	public GameObject equipmentListContainer;
-	public GameObject equipmentScrollbar;
+	[SerializeField] GameObject equipContainer;
+	[SerializeField] GameObject equipmentListContainer;
+	[SerializeField] GameObject equipmentScrollbar;
 	
 	// references to current object being selected
-	public GameObject prevSelectedButton;
+	private GameObject prevSelectedButton;
 	
 	//data members for keeping track of who is trading with who, what inventory should be displaying, etc
-	public GameObject currentSelectedUnit;
-	public UnitScript currentUnitScript;
-	public GameObject currentSelectedItem;
+	private GameObject currentSelectedUnit;
+	private UnitScript currentUnitScript;
+	private GameObject currentSelectedItem;
 	
-	public GameObject itemToolTip;
+	[SerializeField] GameObject itemToolTip;
 	
 	
-	public GameObject currentSelectedTargetUnit;
-	public UnitScript currentTargetUnitScript;
-	public GameObject currentSelectedTargetItem;
-	public GameObject currentSelectedEquip;
-	public GameObject currentSelectedTargetEquip;
-	public EquipmentScript preEquip;
+	private GameObject currentSelectedTargetUnit;
+	private UnitScript currentTargetUnitScript;
+	private GameObject currentSelectedTargetItem;
+	private GameObject currentSelectedEquip;
+	private GameObject currentSelectedTargetEquip;
+	private EquipmentScript preEquip;
 	
-	public GameObject targetItemToolTip;
+	[SerializeField] GameObject targetItemToolTip;
 	
-	public GameObject equipToolTip;
-	public GameObject targetEquipToolTip;
+	[SerializeField] GameObject equipToolTip;
+	[SerializeField] GameObject targetEquipToolTip;
 	
 	// flags to refer to current state
-	public bool choosingUnit;
-	public bool buttonContainerOpen;
-	public bool choosingItem;
-	public bool choosingSlot;
-	public bool choosingEquip;
-	public bool choosingTargetUnit;
-	public bool choosingTargetItem;
-	public bool proceedBool;
-	public bool quitBool;
+	private bool choosingUnit;
+	private bool buttonContainerOpen;
+	private bool choosingItem;
+	private bool choosingSlot;
+	private bool choosingEquip;
+	private bool choosingTargetUnit;
+	private bool choosingTargetItem;
+	private bool proceedBool;
+	private bool quitBool;
 	
-	public int numItemSlots;
-	public float numButtons;
+	private int numItemSlots;
+	private float numButtons;
 	// handler
-	public delegate void MyHandler();
+	private delegate void UnitButtonHandler();
 	
 	// Use this for initialization
 	void Start () {
@@ -368,8 +368,13 @@ public class PartyManagementScript : MonoBehaviour {
 		
 		itemListIndex = itemButtonList.IndexOf(currentSelectedItem.GetComponent<Button>());
 		itemToolTip.transform.GetChild(2).GetComponent<Text>().text = currentUnitScript.itemList[itemListIndex].GetComponent<ItemScript>().description;
-		itemToolTip.transform.GetChild(3).GetComponent<Text>().text = currentUnitScript.itemList[itemListIndex].GetComponent<ItemScript>().range.ToString();
-		itemToolTip.transform.GetChild(4).GetComponent<Text>().text = currentUnitScript.itemList[itemListIndex].GetComponent<ItemScript>().aoeRadius.ToString();
+		if (currentUnitScript.itemList[itemListIndex].GetComponent<ItemScript>().itemName!="Empty Slot") {
+			itemToolTip.transform.GetChild(3).GetComponent<Text>().text = "Range: " + currentUnitScript.itemList[itemListIndex].GetComponent<ItemScript>().range.ToString();
+			itemToolTip.transform.GetChild(4).GetComponent<Text>().text = "Radius: " + currentUnitScript.itemList[itemListIndex].GetComponent<ItemScript>().aoeRadius.ToString();
+		} else {
+			itemToolTip.transform.GetChild(3).GetComponent<Text>().text = "";
+			itemToolTip.transform.GetChild(4).GetComponent<Text>().text = "";
+		}
 		itemToolTip.SetActive(true);
 	}
 	
@@ -382,8 +387,13 @@ public class PartyManagementScript : MonoBehaviour {
 		
 		targetItemListIndex = targetItemButtonList.IndexOf(currentSelectedTargetItem.GetComponent<Button>());
 		targetItemToolTip.transform.GetChild(2).GetComponent<Text>().text = currentTargetUnitScript.itemList[targetItemListIndex].GetComponent<ItemScript>().description;
-		targetItemToolTip.transform.GetChild(3).GetComponent<Text>().text = currentTargetUnitScript.itemList[targetItemListIndex].GetComponent<ItemScript>().range.ToString();
-		targetItemToolTip.transform.GetChild(4).GetComponent<Text>().text = currentTargetUnitScript.itemList[targetItemListIndex].GetComponent<ItemScript>().aoeRadius.ToString();
+		if (currentTargetUnitScript.itemList[targetItemListIndex].GetComponent<ItemScript>().itemName!="Empty Slot") {
+			targetItemToolTip.transform.GetChild(3).GetComponent<Text>().text = "Range: " + currentTargetUnitScript.itemList[targetItemListIndex].GetComponent<ItemScript>().range.ToString();
+			targetItemToolTip.transform.GetChild(4).GetComponent<Text>().text = "Radius: " + currentTargetUnitScript.itemList[targetItemListIndex].GetComponent<ItemScript>().aoeRadius.ToString();
+		} else {
+			targetItemToolTip.transform.GetChild(3).GetComponent<Text>().text = "";
+			targetItemToolTip.transform.GetChild(4).GetComponent<Text>().text = "";
+		}
 		targetItemToolTip.SetActive(true);
 	}
 	//when an equipment slot is highlighted, a tooltip displays the info for the equipment in that slot
@@ -644,8 +654,8 @@ public class PartyManagementScript : MonoBehaviour {
 	
 	//makes the unit buttons interactable
 	//changes the listener functions on the unit buttons to the handler provided as an argument to the method
-	//MyHandler handler: function delegate to be assigned to the unit buttons upon state change
-	void ReengageUnitButtons(MyHandler handler) {
+	//UnitButtonHandler handler: function delegate to be assigned to the unit buttons upon state change
+	void ReengageUnitButtons(UnitButtonHandler handler) {
 		
 		UnityAction tempAction = new UnityAction(handler);
 		

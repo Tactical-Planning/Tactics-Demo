@@ -5,16 +5,16 @@ using System.Collections;
 
 public class GridGenerator : MonoBehaviour {
 
-	public GameObject tile;
-	public GameObject tileArray;
-	public GameObject LevelManager;
-	public GameObject Cursor;
+	[SerializeField] GameObject tile;
+	[SerializeField] GameObject tileArray;
+	[SerializeField] GameObject LevelManager;
+	[SerializeField] GameObject Cursor;
 	
 	private Transform grid;
 	private Transform map;
 
-	public int mapX;
-	public int mapY;
+	[SerializeField] int mapX;
+	[SerializeField] int mapY;
 	private int startX;
 	private int startY;
 
